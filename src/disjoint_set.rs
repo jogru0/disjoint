@@ -1,0 +1,213 @@
+use std::cell::Cell;
+
+/// A disjoint-set data structure.
+///
+/// # Examples
+///
+/// ```
+/// use disjoint::DisjointSet;
+///
+/// // Initially, elements are totally disjoint.
+/// let mut ds = DisjointSet::new(3); // {0}, {1}, {2}
+/// assert!(ds.is_joined(0, 0));
+/// assert!(!ds.is_joined(0, 1));
+///
+/// // Elements can be joined together
+/// ds.join(0, 1); // {0, 1}, {2}
+/// assert!(ds.is_joined(0, 1));
+/// assert!(ds.is_joined(1, 0));
+/// assert!(!ds.is_joined(0, 2));
+///
+/// // Since 0 was joined to 1, if we join 1 to 2, then 0 is joined to 2.
+/// ds.join(1, 2); // {0, 1, 2}
+/// assert!(ds.is_joined(0, 2));
+/// ```
+/// For a real word application example, see [the crate examples].
+///
+/// [the crate examples]: crate#examples
+pub struct DisjointSet {
+    parents: Vec<Cell<usize>>,
+    ranks: Vec<u8>,
+}
+
+impl DisjointSet {
+    #[inline(always)]
+    fn get_parent(&self, id: usize) -> usize {
+        self.parents[id].get()
+    }
+
+    #[inline(always)]
+    fn set_parent(&self, id: usize, new: usize) {
+        self.parents[id].set(new);
+    }
+
+    #[inline(always)]
+    fn get_mut_rank(&mut self, id: usize) -> &mut u8 {
+        &mut self.ranks[id]
+    }
+
+    fn root_of(&self, mut child: usize) -> usize {
+        let mut parent = self.get_parent(child);
+        if child == parent {
+            return child;
+        };
+
+        loop {
+            let grandparent = self.get_parent(parent);
+            if parent == grandparent {
+                return parent;
+            }
+
+            self.set_parent(child, grandparent);
+            child = parent;
+            parent = grandparent;
+        }
+    }
+
+    /// Constructs a new `DisjointSet` with `size` elements, named `0` to `n - 1`, each in its own set.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// let mut ds = DisjointSet::new(4);
+    ///
+    /// // The disjoint set contains 4 elements.
+    /// assert_eq!(ds.len(), 4);
+    ///
+    /// //Two elements i and j are not joined in the same set, unless i = j.
+    /// assert!(!ds.is_joined(0, 3));
+    /// assert!(ds.is_joined(1, 1));
+    ///
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn new(size: usize) -> Self {
+        Self {
+            parents: (0..size).map(Cell::new).collect(),
+            ranks: vec![0; size],
+        }
+    }
+
+    /// If `first_element` and `second_element` are in different sets, joins them together and returns true.
+    ///
+    /// Otherwise, does nothing and returns false.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `first_element` or `second_element` is out of bounds.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// // Initially, each element is in its own set.
+    /// let mut ds = DisjointSet::new(4); // {0}, {1}, {2}, {3}
+    /// assert!(!ds.is_joined(0, 3));
+    ///
+    /// // By joining 0 to 1 and 2 to 3, we get two sets of two elements each.
+    /// ds.join(0, 1); // {0, 1}, {2}, {3}
+    /// ds.join(2, 3); // {0, 1}, {2, 3}
+    /// assert!(ds.is_joined(0, 1));
+    /// assert!(ds.is_joined(2, 3));
+    /// assert!(!ds.is_joined(0, 3));
+    ///
+    /// // By further joining 2 to 3, all elements are now in the same set.
+    /// ds.join(1, 2); // {0, 1, 2, 3}
+    /// assert!(ds.is_joined(0, 3));
+    /// ```
+    pub fn join(&mut self, first_element: usize, second_element: usize) -> bool {
+        if self.get_parent(first_element) == self.get_parent(second_element) {
+            return false;
+        }
+
+        let root_first = self.root_of(first_element);
+        let root_second = self.root_of(second_element);
+
+        if root_first == root_second {
+            return false;
+        }
+
+        let rank_second = *self.get_mut_rank(root_second);
+        let rank_first = self.get_mut_rank(root_first);
+
+        if *rank_first < rank_second {
+            self.set_parent(root_first, root_second);
+        } else {
+            if *rank_first == rank_second {
+                *rank_first += 1;
+            }
+            self.set_parent(root_second, root_first);
+        }
+
+        true
+    }
+
+    /// Returns `true` if `first_element` and `second_element` are in the same subset.
+    ///
+    /// # Panics
+    ///
+    /// Panics if `first_element` or `second_element` is out of bounds.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// // Initially, elements are only joined to themserves.
+    /// let mut ds = DisjointSet::new(3); // {0}, {1}, {2}
+    /// assert!(ds.is_joined(0, 0));
+    /// assert!(!ds.is_joined(0, 1));
+    /// assert!(!ds.is_joined(0, 2));
+    ///
+    /// // By joining 1 to 0, we implicitely join 0 to 1.
+    /// ds.join(1, 0); // {0, 1}, {2}
+    /// assert!(ds.is_joined(1, 0));
+    /// assert!(ds.is_joined(0, 1));
+    ///
+    /// // By joining 0 to 1 and 1 to 2, we implicitely join 0 to 2.
+    /// ds.join(1, 2); // {0, 1, 2}
+    /// assert!(ds.is_joined(0, 2));
+    /// ```
+    #[must_use]
+    #[inline]
+    pub fn is_joined(&self, first_element: usize, second_element: usize) -> bool {
+        self.root_of(first_element) == self.root_of(second_element)
+    }
+
+    /// Returns the number of elements in the disjoint set, regardless of how they are joined together.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// let mut ds = DisjointSet::new(4);
+    /// assert_eq!(ds.len(), 4);
+    ///
+    /// ds.join(1, 3);
+    /// assert_eq!(ds.len(), 4);
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.parents.len()
+    }
+
+    /// Returns `true` if the disjoint set contains no elements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// assert!(DisjointSet::new(0).is_empty());
+    /// assert!(!DisjointSet::new(10).is_empty());
+    /// ```
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.parents.is_empty()
+    }
+}

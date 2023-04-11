@@ -1,0 +1,12 @@
+[package]
+name = "disjoint"
+version = "0.1.0"
+authors = ["Jonathan Gruner <jogru0@gmail.com>"]
+description = "Fast and safe implementation of the disjoint-set data structure."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/jogru0/disjoint"
+readme = "README.md"
+keywords = ["disjoint_set", "disjoint_sets", "union_find", "merge_find", "safe"]
+categories = ["data-structures", "algorithms"]
+edition = "2021"
+rust-version = "1.56"
