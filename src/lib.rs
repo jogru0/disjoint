@@ -2,8 +2,11 @@
 #![warn(missing_docs)]
 #![warn(clippy::must_use_candidate)]
 
-//! This crate provides [`DisjointSet`], a [disjoint-set data structure] implemented in 100% safe Rust.
+//! This crate provides fast [disjoint-set data structures] implementations in 100% safe Rust.
 //!
+//! [`DisjointSet`] is a very lightweight disjoint-set data structure, with no additional data attached to the set elements. Use this if you manage the data associated to the elements yourself, and just want to keep track which elements are joined.
+//!
+//! [`DisjointSetVec<T>`] combines a `DisjointSet` with a `Vec<T>`, so it manages contiguous data entries `T` and keeps track of which entries are joined. Use this if you want the disjoint-set data structure to contain some additional data `T` for each element.
 //!
 //! # Examples
 //!
@@ -86,9 +89,7 @@
 //! }
 //! ```
 //!
-//! See the [`DisjointSet`] documentation for more details on how these and other methods work.
-//!
-//! [disjoint-set data structure]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+//! [disjoint-set data structures]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 //! [undirected edge-weighted graph]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Weighted_graph
 //! [minimal spanning forest]: https://en.wikipedia.org/wiki/Minimum_spanning_tree
 //! [Kruskal’s algorithm]: https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
@@ -97,3 +98,6 @@
 
 mod disjoint_set;
 pub use disjoint_set::DisjointSet;
+
+mod disjoint_set_vec;
+pub use disjoint_set_vec::DisjointSetVec;

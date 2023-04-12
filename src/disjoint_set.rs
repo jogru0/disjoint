@@ -1,6 +1,12 @@
-use std::cell::Cell;
+use std::{cell::Cell, collections::HashMap};
 
-/// A disjoint-set data structure.
+/// A disjoint-set data structure for tracking which elements are joined, without managing any additional data associated to the elements.
+///
+/// This structure has methods like [`join`] or [`is_joined`] to modify or query which data is joined to which. For all of these, the elements are identified with their corresnding index. A `DisjointSet` of [`len`] `n` tracks elments from `0` to `n - 1`.   
+///
+/// [`join`]: DisjointSet::join
+/// [`is_joined`]: DisjointSet::is_joined
+/// [`len`]: DisjointSet::len
 ///
 /// # Examples
 ///
@@ -25,6 +31,7 @@ use std::cell::Cell;
 /// For a real word application example, see [the crate examples].
 ///
 /// [the crate examples]: crate#examples
+#[derive(Debug, Clone, Default)]
 pub struct DisjointSet {
     parents: Vec<Cell<usize>>,
     ranks: Vec<u8>,
@@ -90,9 +97,71 @@ impl DisjointSet {
         }
     }
 
-    /// If `first_element` and `second_element` are in different sets, joins them together and returns true.
+    /// Constructs a new, empty `DisjointSet` with at least the specified capacity.
     ///
-    /// Otherwise, does nothing and returns false.
+    /// It will be able to hold at least `capacity` elements without
+    /// reallocating. This method is allowed to allocate for more elements than
+    /// `capacity`. If `capacity` is 0, it will not allocate.
+    ///
+    /// It is important to note that although the returned `DisjointSet` has the
+    /// minimum *capacity* specified, it will have a zero *length*.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the new capacity exceeds `isize::MAX` bytes.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// let mut ds = DisjointSet::with_capacity(10);
+    ///
+    /// // It contains no elements, even though it has capacity for more.
+    /// assert_eq!(ds.len(), 0);
+    ///
+    /// // These are all done without reallocating...
+    /// for _ in 0..10 {
+    ///     ds.add_singleton();
+    /// }
+    ///
+    /// // ...but this may make the disjoint set reallocate
+    /// ds.add_singleton();
+    /// ```
+    #[inline]
+    #[must_use]
+    pub fn with_capacity(capacity: usize) -> Self {
+        Self {
+            parents: Vec::with_capacity(capacity),
+            ranks: Vec::with_capacity(capacity),
+        }
+    }
+
+    /// Adds a new element, not joined to any other element.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the new capacity exceeds `isize::MAX` bytes.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// let mut ds = DisjointSet::new(1);
+    /// ds.add_singleton();
+    /// assert_eq!(ds.len(), 2);
+    /// assert!(!ds.is_joined(0, 1));
+    /// ```
+    #[inline]
+    pub fn add_singleton(&mut self) {
+        self.parents.push(Cell::new(self.len()));
+        self.ranks.push(0);
+    }
+
+    /// If `first_element` and `second_element` are in different sets, joins them together and returns `true`.
+    ///
+    /// Otherwise, does nothing and returns `false`.
     ///
     /// # Panics
     ///
@@ -119,6 +188,7 @@ impl DisjointSet {
     /// assert!(ds.is_joined(0, 3));
     /// ```
     pub fn join(&mut self, first_element: usize, second_element: usize) -> bool {
+        // Immediate parent check.
         if self.get_parent(first_element) == self.get_parent(second_element) {
             return false;
         }
@@ -209,5 +279,82 @@ impl DisjointSet {
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.parents.is_empty()
+    }
+
+    /// Returns a `Vec` of all sets. Each entry corresponds to one set, and is a `Vec` of its elements.
+    ///
+    /// The sets are ordered by their smallest contained element. The elements inside each sets are ordered.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// let mut ds = DisjointSet::new(4); // {0}, {1}, {2}, {3}
+    /// ds.join(3, 1); // {0}, {1, 3}, {2}
+    /// assert_eq!(ds.get_sets(), vec![vec![0], vec![1, 3], vec![2]]);
+    /// ```
+    #[must_use]
+    pub fn get_sets(&self) -> Vec<Vec<usize>> {
+        let mut result = Vec::new();
+        let mut root_to_result_id = HashMap::new();
+
+        for index in 0..self.len() {
+            let root = self.root_of(index);
+            let &mut result_id = root_to_result_id.entry(root).or_insert_with(|| {
+                let id = result.len();
+                result.push(Vec::with_capacity(1));
+                id
+            });
+            result[result_id].push(index);
+        }
+
+        result
+    }
+}
+
+impl PartialEq for DisjointSet {
+    #[must_use]
+    fn eq(&self, other: &Self) -> bool {
+        if self.len() != other.len() {
+            return false;
+        }
+
+        let mut self_root_to_other_root = std::collections::HashMap::with_capacity(self.len());
+
+        for i in 0..self.len() {
+            let self_root = self.root_of(i);
+            let other_root = other.root_of(i);
+
+            match self_root_to_other_root.entry(self_root) {
+                std::collections::hash_map::Entry::Occupied(entry) => {
+                    if other_root != *entry.get() {
+                        return false;
+                    }
+                }
+                std::collections::hash_map::Entry::Vacant(entry) => {
+                    entry.insert(other_root);
+                }
+            }
+        }
+
+        true
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::DisjointSet;
+
+    #[test]
+    fn join_returns_false_even_if_immediate_parent_check_fails() {
+        let mut ds = DisjointSet::new(4);
+
+        ds.join(0, 1);
+        ds.join(2, 3);
+        ds.join(2, 0);
+
+        assert_ne!(ds.parents[1], ds.parents[3]);
+        assert!(!ds.join(1, 3));
     }
 }
