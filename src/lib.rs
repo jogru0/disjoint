@@ -43,6 +43,11 @@
     clippy::missing_trait_methods
 )]
 
+//! [![Tests](https://github.com/jogru0/disjoint/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jogru0/disjoint/actions/workflows/tests.yml?query=branch:master)
+//! [![Coverage](https://codecov.io/gh/jogru0/disjoint/branch/master/graph/badge.svg?token=D910NJAG7K)](https://app.codecov.io/gh/jogru0/disjoint/tree/master)
+//! [![Crate](https://img.shields.io/crates/v/disjoint.svg?color=blue&logo=rust)](https://crates.io/crates/disjoint)
+//! [![Docs](https://docs.rs/disjoint/badge.svg)](https://docs.rs/disjoint/latest/disjoint)
+//!
 //! This crate provides fast [disjoint-set data structure] implementations in 100% safe Rust.
 //!
 //! [`DisjointSet`] is a very lightweight disjoint-set data structure, with no additional data attached to the set elements. Use this if you manage the data associated to the elements yourself, and just want to keep track which elements are joined.
