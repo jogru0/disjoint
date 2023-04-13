@@ -39,24 +39,28 @@ use crate::DisjointSet;
 /// assert!(ds.is_joined(0, 1));
 /// assert!(!ds.is_joined(0, 2));
 /// ```
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DisjointSetVec<T> {
     data: Vec<T>,
     sets: DisjointSet,
 }
 
 impl<T> Default for DisjointSetVec<T> {
+    #[inline]
+    #[must_use]
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl<T> From<Vec<T>> for DisjointSetVec<T> {
+    #[inline]
+    #[must_use]
     fn from(value: Vec<T>) -> Self {
         let len = value.len();
-        DisjointSetVec {
+        Self {
             data: value,
-            sets: DisjointSet::new(len),
+            sets: DisjointSet::with_len(len),
         }
     }
 }
@@ -93,6 +97,7 @@ impl<T> DisjointSetVec<T> {
     /// // ...but this may make the disjoint set reallocate
     /// ds.push("test");
     /// ```
+    #[inline]
     #[must_use]
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -113,11 +118,12 @@ impl<T> DisjointSetVec<T> {
     ///
     /// let mut ds: DisjointSetVec<i32> = DisjointSetVec::new();
     /// ```
+    #[inline]
     #[must_use]
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {
             data: Vec::new(),
-            sets: DisjointSet::new(0),
+            sets: DisjointSet::new(),
         }
     }
 
@@ -134,6 +140,7 @@ impl<T> DisjointSetVec<T> {
     /// ds.join(1, 2);
     /// assert_eq!(ds.len(), 4);
     /// ```
+    #[inline]
     #[must_use]
     pub fn len(&self) -> usize {
         self.data.len()
@@ -150,6 +157,7 @@ impl<T> DisjointSetVec<T> {
     /// assert_eq!(ds.get(1), Some(&40));
     /// assert_eq!(ds.get(3), None);
     /// ```
+    #[inline]
     #[must_use]
     pub fn get(&self, index: usize) -> Option<&T> {
         self.data.get(index)
@@ -168,6 +176,7 @@ impl<T> DisjointSetVec<T> {
     /// ds.push(2);
     /// assert!(!ds.is_empty());
     /// ```
+    #[inline]
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.data.is_empty()
@@ -193,6 +202,7 @@ impl<T> DisjointSetVec<T> {
     /// assert_eq!(iterator.next(), Some(&30));
     /// assert_eq!(iterator.next(), None);
     /// ```
+    #[inline]
     pub fn iter(&self) -> Iter<'_, T> {
         self.data.iter()
     }
@@ -216,6 +226,7 @@ impl<T> DisjointSetVec<T> {
     /// assert_eq!(ds[1], 4);
     /// assert_eq!(ds[2], 3);
     /// ```
+    #[inline]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         self.data.iter_mut()
     }
@@ -238,6 +249,7 @@ impl<T> DisjointSetVec<T> {
     /// assert!(!ds[1]);
     /// assert!(!ds.is_joined(0, 1));
     /// ```
+    #[inline]
     pub fn push(&mut self, value: T) {
         self.data.push(value);
         self.sets.add_singleton();
@@ -303,6 +315,7 @@ impl<T> DisjointSetVec<T> {
     /// ds.join(1, 2); // {'a', 'b', 'c', 'd'}
     /// assert!(ds.is_joined(0, 3));
     /// ```
+    #[inline]
     pub fn join(&mut self, first_index: usize, second_index: usize) -> bool {
         self.sets.join(first_index, second_index)
     }
@@ -320,6 +333,7 @@ impl<T> DisjointSetVec<T> {
     /// ds.join(3, 1); // {'a'}, {'b', 'd'}, {'c'}
     /// assert_eq!(ds.get_index_sets(), vec![vec![0], vec![1, 3], vec![2]]);
     /// ```
+    #[inline]
     #[must_use]
     pub fn get_index_sets(&self) -> Vec<Vec<usize>> {
         self.sets.get_sets()
@@ -329,12 +343,16 @@ impl<T> DisjointSetVec<T> {
 impl<T> Index<usize> for DisjointSetVec<T> {
     type Output = T;
 
+    #[inline]
+    #[must_use]
     fn index(&self, index: usize) -> &Self::Output {
         self.data.index(index)
     }
 }
 
 impl<T> IndexMut<usize> for DisjointSetVec<T> {
+    #[inline]
+    #[must_use]
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         self.data.index_mut(index)
     }
@@ -344,6 +362,8 @@ impl<T> IntoIterator for DisjointSetVec<T> {
     type Item = <Vec<T> as IntoIterator>::Item;
     type IntoIter = <Vec<T> as IntoIterator>::IntoIter;
 
+    #[inline]
+    #[must_use]
     fn into_iter(self) -> Self::IntoIter {
         IntoIterator::into_iter(self.data)
     }
@@ -353,6 +373,8 @@ impl<'a, T> IntoIterator for &'a DisjointSetVec<T> {
     type Item = <&'a Vec<T> as IntoIterator>::Item;
     type IntoIter = <&'a Vec<T> as IntoIterator>::IntoIter;
 
+    #[inline]
+    #[must_use]
     fn into_iter(self) -> Self::IntoIter {
         IntoIterator::into_iter(&self.data)
     }
@@ -362,6 +384,8 @@ impl<'a, T> IntoIterator for &'a mut DisjointSetVec<T> {
     type Item = <&'a mut Vec<T> as IntoIterator>::Item;
     type IntoIter = <&'a mut Vec<T> as IntoIterator>::IntoIter;
 
+    #[inline]
+    #[must_use]
     fn into_iter(self) -> Self::IntoIter {
         IntoIterator::into_iter(&mut self.data)
     }

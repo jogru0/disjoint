@@ -1,6 +1,10 @@
-# disjoint
+<h1 align="center">disjoint</h1>
 
-This crate provides fast [disjoint-set data structures] implementations in 100% safe Rust.
+[![Tests](https://github.com/jogru0/disjoint/actions/workflows/tests.yml/badge.svg)](https://github.com/jogru0/disjoint/actions)
+[![Codecov](https://codecov.io/gh/jogru0/disjoint/branch/trunk/graph/badge.svg?token=D910NJAG7K)](https://codecov.io/gh/jogru0/disjoint)
+[![Crate](https://img.shields.io/crates/v/disjoint.svg)](https://crates.io/crates/disjoint)
+
+This crate provides fast [disjoint-set data structure] implementations in 100% safe Rust.
 
 `DisjointSet` is a very lightweight disjoint-set data structure, with no additional data attached to the set elements. Use this if you manage the data associated to the elements yourself, and just want to keep track which elements are joined.
 
@@ -65,11 +69,15 @@ fn minimum_spanning_forest_quick_find<G : Graph>(graph: &G) -> G {
 
 See the [documentation] for more details on how these and other methods work.
 
-[disjoint-set data structures]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+[disjoint-set data structure]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 [undirected edge-weighted graph]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Weighted_graph
 [minimal spanning forest]: https://en.wikipedia.org/wiki/Minimum_spanning_tree
 [Kruskal’s algorithm]: https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
 [documentation]: https://docs.rs/disjoint/latest/disjoint/struct.DisjointSet.html
+
+## [`Changelog`]
+
+[`Changelog`]: CHANGELOG.md
 
 ## License
 
