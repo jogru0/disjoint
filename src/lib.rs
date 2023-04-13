@@ -1,8 +1,49 @@
-#![forbid(unsafe_code)]
-#![warn(missing_docs)]
-#![warn(clippy::must_use_candidate)]
+#![forbid(unsafe_code, non_ascii_idents)]
+#![warn(
+    clippy::pedantic,
+    clippy::nursery,
+    clippy::cargo,
+    clippy::restriction,
+    rustdoc::all,
+    explicit_outlives_requirements,
+    keyword_idents,
+    let_underscore_drop,
+    macro_use_extern_crate,
+    meta_variable_misuse,
+    missing_abi,
+    missing_copy_implementations,
+    missing_debug_implementations,
+    missing_docs,
+    noop_method_call,
+    pointer_structural_match,
+    single_use_lifetimes,
+    trivial_casts,
+    trivial_numeric_casts,
+    unreachable_pub,
+    unsafe_op_in_unsafe_fn,
+    unused_crate_dependencies,
+    unused_extern_crates,
+    unused_import_braces,
+    unused_lifetimes,
+    unused_macro_rules,
+    unused_qualifications,
+    unused_tuple_struct_fields,
+    variant_size_differences
+)]
+#![allow(
+    clippy::blanket_clippy_restriction_lints,
+    clippy::pub_use,
+    clippy::single_char_lifetime_names,
+    clippy::missing_docs_in_private_items,
+    clippy::std_instead_of_core,
+    clippy::implicit_return,
+    clippy::indexing_slicing,
+    clippy::arithmetic_side_effects,
+    clippy::integer_arithmetic,
+    clippy::missing_trait_methods
+)]
 
-//! This crate provides fast [disjoint-set data structures] implementations in 100% safe Rust.
+//! This crate provides fast [disjoint-set data structure] implementations in 100% safe Rust.
 //!
 //! [`DisjointSet`] is a very lightweight disjoint-set data structure, with no additional data attached to the set elements. Use this if you manage the data associated to the elements yourself, and just want to keep track which elements are joined.
 //!
@@ -45,7 +86,7 @@
 //!
 //! fn minimum_spanning_forest<G : Graph>(graph: &G) -> G {
 //!     let mut result_edges = Vec::new();
-//!     let mut vertices = DisjointSet::new(graph.number_vertices());
+//!     let mut vertices = DisjointSet::with_len(graph.number_vertices());
 //!
 //!     for edge in graph.edges_ordered_by_weight() {
 //!         if !vertices.is_joined(edge.first_vertex(), edge.second_vertex()) {
@@ -77,7 +118,7 @@
 //!
 //! fn minimum_spanning_forest_quick_find<G : Graph>(graph: &G) -> G {
 //!     let mut result_edges = Vec::new();
-//!     let mut vertices = DisjointSet::new(graph.number_vertices());
+//!     let mut vertices = DisjointSet::with_len(graph.number_vertices());
 //!
 //!     for edge in graph.edges_ordered_by_weight() {
 //!         if vertices.join(edge.first_vertex(), edge.second_vertex()) {
@@ -89,7 +130,7 @@
 //! }
 //! ```
 //!
-//! [disjoint-set data structures]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+//! [disjoint-set data structure]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 //! [undirected edge-weighted graph]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Weighted_graph
 //! [minimal spanning forest]: https://en.wikipedia.org/wiki/Minimum_spanning_tree
 //! [Kruskal’s algorithm]: https://en.wikipedia.org/wiki/Kruskal%27s_algorithm

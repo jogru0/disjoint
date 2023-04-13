@@ -14,7 +14,7 @@ use std::{cell::Cell, collections::HashMap};
 /// use disjoint::DisjointSet;
 ///
 /// // Initially, elements are totally disjoint.
-/// let mut ds = DisjointSet::new(3); // {0}, {1}, {2}
+/// let mut ds = DisjointSet::with_len(3); // {0}, {1}, {2}
 /// assert!(ds.is_joined(0, 0));
 /// assert!(!ds.is_joined(0, 1));
 ///
@@ -31,30 +31,41 @@ use std::{cell::Cell, collections::HashMap};
 /// For a real word application example, see [the crate examples].
 ///
 /// [the crate examples]: crate#examples
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct DisjointSet {
     parents: Vec<Cell<usize>>,
     ranks: Vec<u8>,
 }
 
+impl Default for DisjointSet {
+    #[inline]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DisjointSet {
-    #[inline(always)]
+    #[inline]
+    #[must_use]
     fn get_parent(&self, id: usize) -> usize {
         self.parents[id].get()
     }
 
-    #[inline(always)]
+    #[inline]
     fn set_parent(&self, id: usize, new: usize) {
         self.parents[id].set(new);
     }
 
-    #[inline(always)]
+    #[inline]
+    #[must_use]
     fn get_mut_rank(&mut self, id: usize) -> &mut u8 {
         &mut self.ranks[id]
     }
 
+    #[must_use]
     fn root_of(&self, mut child: usize) -> usize {
         let mut parent = self.get_parent(child);
+
         if child == parent {
             return child;
         };
@@ -71,14 +82,14 @@ impl DisjointSet {
         }
     }
 
-    /// Constructs a new `DisjointSet` with `size` elements, named `0` to `n - 1`, each in its own set.
+    /// Constructs a new `DisjointSet` with `len` elements, named `0` to `n - 1`, each in its own set.
     ///
     /// # Examples
     ///
     /// ```
     /// use disjoint::DisjointSet;
     ///
-    /// let mut ds = DisjointSet::new(4);
+    /// let mut ds = DisjointSet::with_len(4);
     ///
     /// // The disjoint set contains 4 elements.
     /// assert_eq!(ds.len(), 4);
@@ -90,10 +101,10 @@ impl DisjointSet {
     /// ```
     #[inline]
     #[must_use]
-    pub fn new(size: usize) -> Self {
+    pub fn with_len(len: usize) -> Self {
         Self {
-            parents: (0..size).map(Cell::new).collect(),
-            ranks: vec![0; size],
+            parents: (0..len).map(Cell::new).collect(),
+            ranks: vec![0; len],
         }
     }
 
@@ -148,7 +159,7 @@ impl DisjointSet {
     /// ```
     /// use disjoint::DisjointSet;
     ///
-    /// let mut ds = DisjointSet::new(1);
+    /// let mut ds = DisjointSet::with_len(1);
     /// ds.add_singleton();
     /// assert_eq!(ds.len(), 2);
     /// assert!(!ds.is_joined(0, 1));
@@ -173,7 +184,7 @@ impl DisjointSet {
     /// use disjoint::DisjointSet;
     ///
     /// // Initially, each element is in its own set.
-    /// let mut ds = DisjointSet::new(4); // {0}, {1}, {2}, {3}
+    /// let mut ds = DisjointSet::with_len(4); // {0}, {1}, {2}, {3}
     /// assert!(!ds.is_joined(0, 3));
     ///
     /// // By joining 0 to 1 and 2 to 3, we get two sets of two elements each.
@@ -187,32 +198,37 @@ impl DisjointSet {
     /// ds.join(1, 2); // {0, 1, 2, 3}
     /// assert!(ds.is_joined(0, 3));
     /// ```
+    #[inline]
     pub fn join(&mut self, first_element: usize, second_element: usize) -> bool {
+        fn slow_path(ds: &mut DisjointSet, first_element: usize, second_element: usize) -> bool {
+            let root_first = ds.root_of(first_element);
+            let root_second = ds.root_of(second_element);
+
+            if root_first == root_second {
+                return false;
+            }
+
+            let rank_second = *ds.get_mut_rank(root_second);
+            let rank_first = ds.get_mut_rank(root_first);
+
+            if *rank_first < rank_second {
+                ds.set_parent(root_first, root_second);
+            } else {
+                if *rank_first == rank_second {
+                    *rank_first += 1;
+                }
+                ds.set_parent(root_second, root_first);
+            }
+
+            true
+        }
+
         // Immediate parent check.
         if self.get_parent(first_element) == self.get_parent(second_element) {
             return false;
         }
 
-        let root_first = self.root_of(first_element);
-        let root_second = self.root_of(second_element);
-
-        if root_first == root_second {
-            return false;
-        }
-
-        let rank_second = *self.get_mut_rank(root_second);
-        let rank_first = self.get_mut_rank(root_first);
-
-        if *rank_first < rank_second {
-            self.set_parent(root_first, root_second);
-        } else {
-            if *rank_first == rank_second {
-                *rank_first += 1;
-            }
-            self.set_parent(root_second, root_first);
-        }
-
-        true
+        slow_path(self, first_element, second_element)
     }
 
     /// Returns `true` if `first_element` and `second_element` are in the same subset.
@@ -227,7 +243,7 @@ impl DisjointSet {
     /// use disjoint::DisjointSet;
     ///
     /// // Initially, elements are only joined to themserves.
-    /// let mut ds = DisjointSet::new(3); // {0}, {1}, {2}
+    /// let mut ds = DisjointSet::with_len(3); // {0}, {1}, {2}
     /// assert!(ds.is_joined(0, 0));
     /// assert!(!ds.is_joined(0, 1));
     /// assert!(!ds.is_joined(0, 2));
@@ -254,7 +270,7 @@ impl DisjointSet {
     /// ```
     /// use disjoint::DisjointSet;
     ///
-    /// let mut ds = DisjointSet::new(4);
+    /// let mut ds = DisjointSet::with_len(4);
     /// assert_eq!(ds.len(), 4);
     ///
     /// ds.join(1, 3);
@@ -273,12 +289,33 @@ impl DisjointSet {
     /// ```
     /// use disjoint::DisjointSet;
     ///
-    /// assert!(DisjointSet::new(0).is_empty());
-    /// assert!(!DisjointSet::new(10).is_empty());
+    /// assert!(DisjointSet::new().is_empty());
+    /// assert!(DisjointSet::with_len(0).is_empty());
+    /// assert!(!DisjointSet::with_len(10).is_empty());
     /// ```
     #[must_use]
+    #[inline]
     pub fn is_empty(&self) -> bool {
         self.parents.is_empty()
+    }
+
+    /// Constructs a new, empty `DisjointSet`.
+    ///
+    /// The disjoint set will not allocate until elements are added to it.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # #![allow(unused_mut)]
+    /// let mut vec: Vec<i32> = Vec::new();
+    /// ```
+    #[must_use]
+    #[inline]
+    pub const fn new() -> Self {
+        Self {
+            parents: Vec::new(),
+            ranks: Vec::new(),
+        }
     }
 
     /// Returns a `Vec` of all sets. Each entry corresponds to one set, and is a `Vec` of its elements.
@@ -290,11 +327,12 @@ impl DisjointSet {
     /// ```
     /// use disjoint::DisjointSet;
     ///
-    /// let mut ds = DisjointSet::new(4); // {0}, {1}, {2}, {3}
+    /// let mut ds = DisjointSet::with_len(4); // {0}, {1}, {2}, {3}
     /// ds.join(3, 1); // {0}, {1, 3}, {2}
     /// assert_eq!(ds.get_sets(), vec![vec![0], vec![1, 3], vec![2]]);
     /// ```
     #[must_use]
+    #[allow(clippy::missing_inline_in_public_items)]
     pub fn get_sets(&self) -> Vec<Vec<usize>> {
         let mut result = Vec::new();
         let mut root_to_result_id = HashMap::new();
@@ -315,6 +353,7 @@ impl DisjointSet {
 
 impl PartialEq for DisjointSet {
     #[must_use]
+    #[allow(clippy::missing_inline_in_public_items)]
     fn eq(&self, other: &Self) -> bool {
         if self.len() != other.len() {
             return false;
@@ -342,13 +381,15 @@ impl PartialEq for DisjointSet {
     }
 }
 
+impl Eq for DisjointSet {}
+
 #[cfg(test)]
 mod test {
     use crate::DisjointSet;
 
     #[test]
     fn join_returns_false_even_if_immediate_parent_check_fails() {
-        let mut ds = DisjointSet::new(4);
+        let mut ds = DisjointSet::with_len(4);
 
         ds.join(0, 1);
         ds.join(2, 3);
