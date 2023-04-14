@@ -78,16 +78,18 @@ See the [documentation] for more details on how to use this crate.
 [Kruskal’s algorithm]: https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
 [documentation]: https://docs.rs/disjoint/latest/disjoint/struct.DisjointSet.html
 
-## [`Changelog`]
+ ## Changelog
 
-[`Changelog`]: CHANGELOG.md
+ This crate maintains a [`changelog`].
+ 
+ [`Changelog`]: https://github.com/jogru0/disjoint/blob/master/CHANGELOG.md
 
 ## License
 
 Licensed under either of:
 
- * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
- * MIT license ([LICENSE-MIT](LICENSE-MIT) or https://opensource.org/licenses/MIT)
+ * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or <https://www.apache.org/licenses/LICENSE-2.0>)
+ * MIT license ([LICENSE-MIT](LICENSE-MIT) or <https://opensource.org/licenses/MIT>)
 
 at your option.
 

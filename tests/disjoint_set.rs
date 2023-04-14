@@ -22,7 +22,7 @@ fn verify_subsets(disjoint_set: &DisjointSet, expected_subsets_ordered: &[Vec<us
         }
     }
 
-    assert_eq!(disjoint_set.get_sets(), expected_subsets_ordered)
+    assert_eq!(disjoint_set.sets(), expected_subsets_ordered)
 }
 
 #[test]
@@ -277,7 +277,7 @@ fn different_joining_order_equal() {
 fn get_sets_empty() {
     let ds = DisjointSet::new();
 
-    let sets = ds.get_sets();
+    let sets = ds.sets();
 
     let expected: Vec<Vec<_>> = Vec::new();
 
@@ -288,7 +288,7 @@ fn get_sets_empty() {
 fn get_sets_singletons() {
     let ds = DisjointSet::with_len(10);
 
-    let sets = ds.get_sets();
+    let sets = ds.sets();
 
     let expected = vec![
         vec![0],
@@ -318,7 +318,7 @@ fn get_sets_all_in_one() {
     ds.join(5, 7);
     ds.join(3, 4);
 
-    let sets = ds.get_sets();
+    let sets = ds.sets();
 
     let expected = [vec![0, 1, 2, 3, 4, 5, 6, 7]];
 
@@ -334,7 +334,7 @@ fn get_sets_complex() {
     ds.add_singleton();
     ds.join(2, 5);
 
-    let sets = ds.get_sets();
+    let sets = ds.sets();
 
     let expected = [vec![0, 3], vec![1, 2, 5], vec![4]];
 

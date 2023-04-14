@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.5.0] - 2021-04-15
+
+### Removed
+- Removed `DisjointSetVec::get_index_sets`.
+    - Migration: Replace `dsv.get_index_sets()` with `dsv.indices().sets()`.
+
+### Changed
+- Renamed `DisjointSet::get_sets` to `DisjointSet::sets`.
+
+### Added
+- Implemented `From<IntoVec>` for `DisjointSetVec<T>` for all `IntoVec` that satisfy `Vec<T> : From<IntoVec>`.
+- Added `values` and `indices` to `DisjointSetVec`.
+- Added `disjoint_set_vec!` macro.
+
 ## [v0.4.0] - 2021-04-14
 
 ### Changed
@@ -31,3 +45,4 @@
 [v0.2.0]: https://github.com/jogru0/disjoint/compare/v0.1.0...v0.2.0
 [v0.3.0]: https://github.com/jogru0/disjoint/compare/v0.2.0...v0.3.0
 [v0.4.0]: https://github.com/jogru0/disjoint/compare/v0.3.0...v0.4.0
+[v0.5.0]: https://github.com/jogru0/disjoint/compare/v0.4.0...v0.5.0

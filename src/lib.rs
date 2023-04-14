@@ -2,7 +2,7 @@
 // Disabled to support old Rust versions.
 // Activate these when developing locally on a recent toolchain.
 /////////////////////////////
-// #![warn(rustdoc::all)]  //
+// #![warn(rustdoc::all)] //
 // #![warn(unknown_lints)] //
 /////////////////////////////
 #![forbid(unsafe_code)]
@@ -148,9 +148,32 @@
 //! [Kruskal’s algorithm]: https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
 //! [`join`]: DisjointSet::join
 //! [`is_joined`]: DisjointSet::is_joined
+//!
+//! ## Changelog
+//!
+//! This crate maintains a [`changelog`].
+//!
+//! [`Changelog`]: https://github.com/jogru0/disjoint/blob/master/CHANGELOG.md
+//!
+//! ## License
+//!
+//! Licensed under either of:
+//!
+//!  * Apache License, Version 2.0, ([LICENSE-APACHE](LICENSE-APACHE) or <https://www.apache.org/licenses/LICENSE-2.0>)
+//!  * MIT license ([LICENSE-MIT](LICENSE-MIT) or <https://opensource.org/licenses/MIT>)
+//!
+//! at your option.
+//!
+//! ### Contribution
+//!
+//! Unless you explicitly state otherwise, any contribution intentionally submitted
+//! for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+//! additional terms or conditions.
 
 mod disjoint_set;
 pub use self::disjoint_set::DisjointSet;
 
 mod disjoint_set_vec;
 pub use self::disjoint_set_vec::DisjointSetVec;
+
+mod macros;

@@ -331,11 +331,11 @@ impl DisjointSet {
     ///
     /// let mut ds = DisjointSet::with_len(4); // {0}, {1}, {2}, {3}
     /// ds.join(3, 1); // {0}, {1, 3}, {2}
-    /// assert_eq!(ds.get_sets(), vec![vec![0], vec![1, 3], vec![2]]);
+    /// assert_eq!(ds.sets(), vec![vec![0], vec![1, 3], vec![2]]);
     /// ```
     #[must_use]
     #[allow(clippy::missing_inline_in_public_items)]
-    pub fn get_sets(&self) -> Vec<Vec<usize>> {
+    pub fn sets(&self) -> Vec<Vec<usize>> {
         let mut result = Vec::new();
         let mut root_to_result_id = HashMap::new();
 

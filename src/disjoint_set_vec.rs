@@ -9,41 +9,44 @@ use crate::DisjointSet;
 ///
 /// This structure exposes parts of the `Vec<T>` interface like [`push`], or access to the stored data via indexing (`container[index]`).
 ///
-/// This structure also has methods like [`join`] or [`get_index_sets`] to modify or query which data is joined to which. These all work with the indices of the data.  
+/// This structure also has methods like [`join`] or [`is_joined`] to modify or query which data is joined to which. These all work with the indices of the data.
+///
+/// The macro [`disjoint_set_vec!`] can be used for convenient array-like construction of [`DisjointSet`]s.
 ///
 /// [`push`]: DisjointSetVec::push
 /// [`join`]: DisjointSetVec::join
-/// [`get_index_sets`]: DisjointSetVec::get_index_sets
+/// [`is_joined`]: DisjointSetVec::is_joined
+/// [`disjoint_set_vec!`]: crate::disjoint_set_vec!
 ///
 /// # Examples
 ///
 /// ```
-/// use disjoint::DisjointSetVec;
+/// use disjoint::disjoint_set_vec;
 ///
 /// // Initially, elements are totally disjoint.
-/// let mut ds = DisjointSetVec::from(vec!['a', 'b']); // {'a'}, {'b'}
+/// let mut dsv = disjoint_set_vec!['a', 'b']; // {'a'}, {'b'}
 ///
 /// // Joining 'a' and 'b' together via their indices.
-/// ds.join(0, 1); // {'a', 'b'}
+/// dsv.join(0, 1); // {'a', 'b'}
 ///
 /// // Adding 'd', not joined to anything.
-/// ds.push('c'); // {'a', 'b'}, {'c'}
+/// dsv.push('c'); // {'a', 'b'}, {'c'}
 ///
 /// // Change 'b' to 'y'.
-/// ds[1] = 'y'; // {'a', 'y'}, {'c'}
+/// dsv[1] = 'y'; // {'a', 'y'}, {'c'}
 ///
 /// // Verify that 'a' is currently joined to 'y', but not to 'd'.
-/// assert_eq!(ds[0], 'a');
-/// assert_eq!(ds[1], 'y');
-/// assert_eq!(ds[2], 'c');
-/// assert!(ds.is_joined(0, 1));
-/// assert!(!ds.is_joined(0, 2));
+/// assert_eq!(dsv[0], 'a');
+/// assert_eq!(dsv[1], 'y');
+/// assert_eq!(dsv[2], 'c');
+/// assert!(dsv.is_joined(0, 1));
+/// assert!(!dsv.is_joined(0, 2));
 /// ```
 #[allow(clippy::missing_inline_in_public_items)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DisjointSetVec<T> {
     data: Vec<T>,
-    sets: DisjointSet,
+    indices: DisjointSet,
 }
 
 impl<T> Default for DisjointSetVec<T> {
@@ -54,19 +57,71 @@ impl<T> Default for DisjointSetVec<T> {
     }
 }
 
-impl<T> From<Vec<T>> for DisjointSetVec<T> {
-    #[inline]
+impl<IntoVec, T> From<IntoVec> for DisjointSetVec<T>
+where
+    Vec<T>: From<IntoVec>,
+{
     #[must_use]
-    fn from(value: Vec<T>) -> Self {
-        let len = value.len();
+    #[inline]
+    fn from(value: IntoVec) -> Self {
+        let data = Vec::from(value);
+        let len = data.len();
         Self {
-            data: value,
-            sets: DisjointSet::with_len(len),
+            data,
+            indices: DisjointSet::with_len(len),
         }
     }
 }
 
 impl<T> DisjointSetVec<T> {
+    /// Returns a `&Vec<T>` of all values .
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::disjoint_set_vec;
+    ///
+    /// let dsv = disjoint_set_vec![
+    ///     ("a", true),
+    ///     ("b", false),
+    ///     ("c", true),
+    /// ];
+    ///
+    /// assert_eq!(*dsv.values(), [
+    ///     ("a", true),
+    ///     ("b", false),
+    ///     ("c", true),
+    /// ]);
+    /// ```
+    #[must_use]
+    #[inline]
+    pub const fn values(&self) -> &Vec<T> {
+        &self.data
+    }
+
+    /// Returns a `&DisjointSet` of all indices and the information of how they are joined.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::disjoint_set_vec;
+    ///
+    /// let mut dsv = disjoint_set_vec![
+    ///     3; 10
+    /// ];
+    ///
+    /// dsv.join(2, 4);
+    /// let indices = dsv.indices();
+    ///
+    /// assert!(indices.is_joined(2, 4));
+    /// assert!(!indices.is_joined(3, 4));
+    /// ```
+    #[must_use]
+    #[inline]
+    pub const fn indices(&self) -> &DisjointSet {
+        &self.indices
+    }
+
     /// Constructs a new, empty `DisjointSetVec` with at least the specified capacity.
     ///
     /// It will be able to hold at least `capacity` elements without
@@ -85,25 +140,25 @@ impl<T> DisjointSetVec<T> {
     /// ```
     /// use disjoint::DisjointSetVec;
     ///
-    /// let mut ds = DisjointSetVec::with_capacity(10);
+    /// let mut dsv = DisjointSetVec::with_capacity(10);
     ///
     /// // It contains no elements, even though it has capacity for more.
-    /// assert_eq!(ds.len(), 0);
+    /// assert_eq!(dsv.len(), 0);
     ///
     /// // These are all done without reallocating...
     /// for _ in 0..10 {
-    ///     ds.push("test");
+    ///     dsv.push("test");
     /// }
     ///
     /// // ...but this may make the disjoint set reallocate
-    /// ds.push("test");
+    /// dsv.push("test");
     /// ```
     #[inline]
     #[must_use]
     pub fn with_capacity(capacity: usize) -> Self {
         Self {
             data: Vec::with_capacity(capacity),
-            sets: DisjointSet::with_capacity(capacity),
+            indices: DisjointSet::with_capacity(capacity),
         }
     }
 
@@ -124,7 +179,7 @@ impl<T> DisjointSetVec<T> {
     pub fn new() -> Self {
         Self {
             data: Vec::new(),
-            sets: DisjointSet::new(),
+            indices: DisjointSet::new(),
         }
     }
 
@@ -133,13 +188,13 @@ impl<T> DisjointSetVec<T> {
     /// # Examples
     ///
     /// ```
-    /// use disjoint::DisjointSetVec;
+    /// use disjoint::disjoint_set_vec;
     ///
-    /// let mut ds = DisjointSetVec::from(vec![10, 20, 30, 20]);
-    /// assert_eq!(ds.len(), 4);
+    /// let mut dsv = disjoint_set_vec![10, 20, 30, 20];
+    /// assert_eq!(dsv.len(), 4);
     ///
-    /// ds.join(1, 2);
-    /// assert_eq!(ds.len(), 4);
+    /// dsv.join(1, 2);
+    /// assert_eq!(dsv.len(), 4);
     /// ```
     #[inline]
     #[must_use]
@@ -152,11 +207,11 @@ impl<T> DisjointSetVec<T> {
     /// # Examples
     ///
     /// ```
-    /// use disjoint::DisjointSetVec;
+    /// use disjoint::disjoint_set_vec;
     ///
-    /// let ds = DisjointSetVec::from(vec![10, 40, 30]);
-    /// assert_eq!(ds.get(1), Some(&40));
-    /// assert_eq!(ds.get(3), None);
+    /// let dsv = disjoint_set_vec![10, 40, 30];
+    /// assert_eq!(dsv.get(1), Some(&40));
+    /// assert_eq!(dsv.get(3), None);
     /// ```
     #[inline]
     #[must_use]
@@ -171,11 +226,11 @@ impl<T> DisjointSetVec<T> {
     /// ```
     /// use disjoint::DisjointSetVec;
     ///
-    /// let mut ds = DisjointSetVec::new();
-    /// assert!(ds.is_empty());
+    /// let mut dsv = DisjointSetVec::new();
+    /// assert!(dsv.is_empty());
     ///
-    /// ds.push(2);
-    /// assert!(!ds.is_empty());
+    /// dsv.push(2);
+    /// assert!(!dsv.is_empty());
     /// ```
     #[inline]
     #[must_use]
@@ -190,13 +245,13 @@ impl<T> DisjointSetVec<T> {
     /// # Examples
     ///
     /// ```
-    /// use disjoint::DisjointSetVec;
+    /// use disjoint::disjoint_set_vec;
     ///
-    /// let mut ds = DisjointSetVec::from(vec![10, 40, 30]);
+    /// let mut dsv = disjoint_set_vec![10, 40, 30];
     ///
-    /// ds.join(0, 2);
+    /// dsv.join(0, 2);
     ///
-    /// let mut iterator = ds.iter();
+    /// let mut iterator = dsv.iter();
     ///
     /// assert_eq!(iterator.next(), Some(&10));
     /// assert_eq!(iterator.next(), Some(&40));
@@ -215,17 +270,17 @@ impl<T> DisjointSetVec<T> {
     /// # Examples
     ///
     /// ```
-    /// use disjoint::DisjointSetVec;
+    /// use disjoint::disjoint_set_vec;
     ///
-    /// let mut ds = DisjointSetVec::from(vec![10, 40, 30]);
+    /// let mut dsv = disjoint_set_vec![10, 40, 30];
     ///
-    /// for elem in ds.iter_mut() {
+    /// for elem in dsv.iter_mut() {
     ///     *elem /= 10;
     /// }
     ///
-    /// assert_eq!(ds[0], 1);
-    /// assert_eq!(ds[1], 4);
-    /// assert_eq!(ds[2], 3);
+    /// assert_eq!(dsv[0], 1);
+    /// assert_eq!(dsv[1], 4);
+    /// assert_eq!(dsv[2], 3);
     /// ```
     #[inline]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
@@ -241,19 +296,19 @@ impl<T> DisjointSetVec<T> {
     /// # Examples
     ///
     /// ```
-    /// use disjoint::DisjointSetVec;
+    /// use disjoint::disjoint_set_vec;
     ///
-    /// let mut ds = DisjointSetVec::from(vec![true]);
-    /// ds.push(false);
-    /// assert_eq!(ds.len(), 2);
-    /// assert!(ds[0]);
-    /// assert!(!ds[1]);
-    /// assert!(!ds.is_joined(0, 1));
+    /// let mut dsv = disjoint_set_vec![true];
+    /// dsv.push(false);
+    /// assert_eq!(dsv.len(), 2);
+    /// assert!(dsv[0]);
+    /// assert!(!dsv[1]);
+    /// assert!(!dsv.is_joined(0, 1));
     /// ```
     #[inline]
     pub fn push(&mut self, value: T) {
         self.data.push(value);
-        self.sets.add_singleton();
+        self.indices.add_singleton();
     }
 
     /// Returns `true` if elements at `first_index` and `second_index` are in the same subset.
@@ -265,27 +320,27 @@ impl<T> DisjointSetVec<T> {
     /// # Examples
     ///
     /// ```
-    /// use disjoint::DisjointSetVec;
+    /// use disjoint::disjoint_set_vec;
     ///
     /// // Initially, elements are only joined to themserves.
-    /// let mut ds = DisjointSetVec::from(vec!['a', 'b', 'c']); // {'a'}, {'b'}, {'c'}
-    /// assert!(ds.is_joined(0, 0));
-    /// assert!(!ds.is_joined(0, 1));
-    /// assert!(!ds.is_joined(0, 2));
+    /// let mut dsv = disjoint_set_vec!['a', 'b', 'c']; // {'a'}, {'b'}, {'c'}
+    /// assert!(dsv.is_joined(0, 0));
+    /// assert!(!dsv.is_joined(0, 1));
+    /// assert!(!dsv.is_joined(0, 2));
     ///
     /// // By joining 'b' to 'a', we implicitely join 'a' to 'b'.
-    /// ds.join(1, 0); // {'a', 'b'}, {'c'}
-    /// assert!(ds.is_joined(1, 0));
-    /// assert!(ds.is_joined(0, 1));
+    /// dsv.join(1, 0); // {'a', 'b'}, {'c'}
+    /// assert!(dsv.is_joined(1, 0));
+    /// assert!(dsv.is_joined(0, 1));
     ///
     /// // By joining 'a' to 'b' and 'b' to 'c', we implicitely join 'a' to 'c'.
-    /// ds.join(1, 2); // {'a', 'b', 'c'}
-    /// assert!(ds.is_joined(0, 2));
+    /// dsv.join(1, 2); // {'a', 'b', 'c'}
+    /// assert!(dsv.is_joined(0, 2));
     /// ```
     #[must_use]
     #[inline]
     pub fn is_joined(&self, first_index: usize, second_index: usize) -> bool {
-        self.sets.is_joined(first_index, second_index)
+        self.indices.is_joined(first_index, second_index)
     }
 
     /// If elments at `first_index` and `second_index` are in different sets, joins them together and returns `true`.
@@ -299,45 +354,26 @@ impl<T> DisjointSetVec<T> {
     /// # Examples
     ///
     /// ```
-    /// use disjoint::DisjointSetVec;
+    /// use disjoint::disjoint_set_vec;
     ///
     /// // Initially, each element is in its own set.
-    /// let mut ds = DisjointSetVec::from(vec!['a', 'b', 'c', 'd']); // {'a'}, {'b'}, {'c'}, {'d'}
-    /// assert!(!ds.is_joined(0, 3));
+    /// let mut dsv = disjoint_set_vec!['a', 'b', 'c', 'd']; // {'a'}, {'b'}, {'c'}, {'d'}
+    /// assert!(!dsv.is_joined(0, 3));
     ///
     /// // By joining 'a' to 'b' and 'c' to 'd', we get two sets of two elements each.
-    /// ds.join(0, 1); // {'a', 'b'}, {'c'}, {'d'}
-    /// ds.join(2, 3); // {'a', 'b'}, {'c', 'd'}
-    /// assert!(ds.is_joined(0, 1));
-    /// assert!(ds.is_joined(2, 3));
-    /// assert!(!ds.is_joined(0, 3));
+    /// dsv.join(0, 1); // {'a', 'b'}, {'c'}, {'d'}
+    /// dsv.join(2, 3); // {'a', 'b'}, {'c', 'd'}
+    /// assert!(dsv.is_joined(0, 1));
+    /// assert!(dsv.is_joined(2, 3));
+    /// assert!(!dsv.is_joined(0, 3));
     ///
     /// // By further joining 'b' to 'c', all elements are now in the same set.
-    /// ds.join(1, 2); // {'a', 'b', 'c', 'd'}
-    /// assert!(ds.is_joined(0, 3));
+    /// dsv.join(1, 2); // {'a', 'b', 'c', 'd'}
+    /// assert!(dsv.is_joined(0, 3));
     /// ```
     #[inline]
     pub fn join(&mut self, first_index: usize, second_index: usize) -> bool {
-        self.sets.join(first_index, second_index)
-    }
-
-    /// Returns a `Vec` of all index sets. Each entry corresponds to one set, and is a `Vec` of the indices of its elements.
-    ///
-    /// The sets are ordered by their smallest contained index. The indices inside each sets are ordered.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use disjoint::DisjointSetVec;
-    ///
-    /// let mut ds = DisjointSetVec::from(vec!['a', 'b', 'c', 'd']); // {'a'}, {'b'}, {'c'}, {'d'}
-    /// ds.join(3, 1); // {'a'}, {'b', 'd'}, {'c'}
-    /// assert_eq!(ds.get_index_sets(), vec![vec![0], vec![1, 3], vec![2]]);
-    /// ```
-    #[inline]
-    #[must_use]
-    pub fn get_index_sets(&self) -> Vec<Vec<usize>> {
-        self.sets.get_sets()
+        self.indices.join(first_index, second_index)
     }
 }
 
