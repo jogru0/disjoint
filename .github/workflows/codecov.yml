@@ -2,9 +2,9 @@ name: Codecov
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "trunk, master" ]
   pull_request:
-    branches: [ "trunk", "master" ]
+    branches: [ "trunk" ]
 
 env:
   CARGO_TERM_COLOR: always

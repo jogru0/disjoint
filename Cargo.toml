@@ -1,6 +1,6 @@
 [package]
 name = "disjoint"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["Jonathan Gruner <jogru0@gmail.com>"]
 description = "Fast and safe implementation of the disjoint-set data structure."
 license = "MIT OR Apache-2.0"
@@ -8,5 +8,5 @@ repository = "https://github.com/jogru0/disjoint"
 readme = "README.md"
 keywords = ["disjoint_set", "disjoint_sets", "union_find", "merge_find", "safe"]
 categories = ["data-structures", "algorithms"]
-edition = "2021"
-rust-version = "1.56"
+edition = "2018"
+# rust-version = "1.31" <-- We really support this version, it's just to old for the rust-version key to exist.

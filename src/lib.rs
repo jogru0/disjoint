@@ -1,10 +1,17 @@
-#![forbid(unsafe_code, non_ascii_idents)]
+#![allow(unknown_lints)]
+// Disabled to support old Rust versions.
+// Activate these when developing locally on a recent toolchain.
+/////////////////////////////
+// #![warn(rustdoc::all)]  //
+// #![warn(unknown_lints)] //
+/////////////////////////////
+#![forbid(unsafe_code)]
+#![forbid(non_ascii_idents)]
 #![warn(
     clippy::pedantic,
     clippy::nursery,
     clippy::cargo,
     clippy::restriction,
-    rustdoc::all,
     explicit_outlives_requirements,
     keyword_idents,
     let_underscore_drop,
@@ -143,7 +150,7 @@
 //! [`is_joined`]: DisjointSet::is_joined
 
 mod disjoint_set;
-pub use disjoint_set::DisjointSet;
+pub use self::disjoint_set::DisjointSet;
 
 mod disjoint_set_vec;
-pub use disjoint_set_vec::DisjointSetVec;
+pub use self::disjoint_set_vec::DisjointSetVec;

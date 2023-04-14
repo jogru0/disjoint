@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.4.0] - 2021-04-14
+
+### Changed
+- `DisjointSet::new` and `DisjointSetVec::new` are not `const` anymore. 
+- Improved the minimum supported Rust version from `1.56` to `1.31`.
+
 
 ## [v0.3.0] - 2021-04-14
 
