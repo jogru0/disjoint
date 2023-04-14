@@ -70,7 +70,7 @@ fn minimum_spanning_forest_quick_find<G : Graph>(graph: &G) -> G {
 }
 ```
 
-See the [documentation] for more details on how these and other methods work.
+See the [documentation] for more details on how to use this crate.
 
 [disjoint-set data structure]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 [undirected edge-weighted graph]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Weighted_graph
