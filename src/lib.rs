@@ -1,10 +1,17 @@
-#![forbid(unsafe_code, non_ascii_idents)]
+#![allow(unknown_lints)]
+// Disabled to support old Rust versions.
+// Activate these when developing locally on a recent toolchain.
+/////////////////////////////
+// #![warn(rustdoc::all)]  //
+// #![warn(unknown_lints)] //
+/////////////////////////////
+#![forbid(unsafe_code)]
+#![forbid(non_ascii_idents)]
 #![warn(
     clippy::pedantic,
     clippy::nursery,
     clippy::cargo,
     clippy::restriction,
-    rustdoc::all,
     explicit_outlives_requirements,
     keyword_idents,
     let_underscore_drop,
@@ -43,6 +50,11 @@
     clippy::missing_trait_methods
 )]
 
+//! [![Tests](https://github.com/jogru0/disjoint/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jogru0/disjoint/actions/workflows/tests.yml?query=branch:master)
+//! [![Coverage](https://codecov.io/gh/jogru0/disjoint/branch/master/graph/badge.svg?token=D910NJAG7K)](https://app.codecov.io/gh/jogru0/disjoint/tree/master)
+//! [![Crate](https://img.shields.io/crates/v/disjoint.svg?color=blue&logo=rust)](https://crates.io/crates/disjoint)
+//! [![Docs](https://docs.rs/disjoint/badge.svg)](https://docs.rs/disjoint/latest/disjoint)
+//!
 //! This crate provides fast [disjoint-set data structure] implementations in 100% safe Rust.
 //!
 //! [`DisjointSet`] is a very lightweight disjoint-set data structure, with no additional data attached to the set elements. Use this if you manage the data associated to the elements yourself, and just want to keep track which elements are joined.
@@ -138,7 +150,7 @@
 //! [`is_joined`]: DisjointSet::is_joined
 
 mod disjoint_set;
-pub use disjoint_set::DisjointSet;
+pub use self::disjoint_set::DisjointSet;
 
 mod disjoint_set_vec;
-pub use disjoint_set_vec::DisjointSetVec;
+pub use self::disjoint_set_vec::DisjointSetVec;

@@ -1,8 +1,11 @@
 <h1 align="center">disjoint</h1>
 
-[![Tests](https://github.com/jogru0/disjoint/actions/workflows/tests.yml/badge.svg)](https://github.com/jogru0/disjoint/actions)
-[![Codecov](https://codecov.io/gh/jogru0/disjoint/branch/trunk/graph/badge.svg?token=D910NJAG7K)](https://codecov.io/gh/jogru0/disjoint)
-[![Crate](https://img.shields.io/crates/v/disjoint.svg)](https://crates.io/crates/disjoint)
+[![Tests](https://github.com/jogru0/disjoint/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jogru0/disjoint/actions/workflows/tests.yml?query=branch:master)
+[![Coverage](https://codecov.io/gh/jogru0/disjoint/branch/master/graph/badge.svg?token=D910NJAG7K)](https://app.codecov.io/gh/jogru0/disjoint/tree/master)
+[![Crate](https://img.shields.io/crates/v/disjoint.svg?color=blue&logo=rust)](https://crates.io/crates/disjoint)
+[![Docs](https://docs.rs/disjoint/badge.svg)](https://docs.rs/disjoint/latest/disjoint)
+
+
 
 This crate provides fast [disjoint-set data structure] implementations in 100% safe Rust.
 
@@ -67,7 +70,7 @@ fn minimum_spanning_forest_quick_find<G : Graph>(graph: &G) -> G {
 }
 ```
 
-See the [documentation] for more details on how these and other methods work.
+See the [documentation] for more details on how to use this crate.
 
 [disjoint-set data structure]: https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 [undirected edge-weighted graph]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Weighted_graph

@@ -31,6 +31,7 @@ use std::{cell::Cell, collections::HashMap};
 /// For a real word application example, see [the crate examples].
 ///
 /// [the crate examples]: crate#examples
+#[allow(clippy::missing_inline_in_public_items)]
 #[derive(Debug, Clone)]
 pub struct DisjointSet {
     parents: Vec<Cell<usize>>,
@@ -311,7 +312,8 @@ impl DisjointSet {
     /// ```
     #[must_use]
     #[inline]
-    pub const fn new() -> Self {
+    #[allow(clippy::missing_const_for_fn)]
+    pub fn new() -> Self {
         Self {
             parents: Vec::new(),
             ranks: Vec::new(),

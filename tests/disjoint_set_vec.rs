@@ -129,6 +129,8 @@ fn join_two_non_trivial_subsets() {
 }
 
 #[test]
+#[allow(renamed_and_removed_lints)]
+#[allow(clippy::cyclomatic_complexity)]
 fn arbitrary_sequence_of_join_and_is_joined() {
     let mut disjoint_set = DisjointSetVec::from(vec![3; 5]);
     assert!(!disjoint_set.is_joined(1, 2));
@@ -183,7 +185,7 @@ fn panic_join_first_element_oob() {
 #[should_panic]
 fn panic_join_second_element_oob() {
     let mut disjoint_set = DisjointSetVec::from(vec![3; 100]);
-    disjoint_set.join(0, 1000000000000);
+    disjoint_set.join(0, 1_000_000_000_000);
 }
 
 #[test]
@@ -204,7 +206,7 @@ fn panic_is_joined_first_element_oob() {
 #[should_panic]
 fn panic_is_joined_second_element_oob() {
     let disjoint_set = DisjointSetVec::from(vec![3; 100]);
-    let _ = disjoint_set.is_joined(0, 1000000000000);
+    let _ = disjoint_set.is_joined(0, 1_000_000_000_000);
 }
 
 #[test]

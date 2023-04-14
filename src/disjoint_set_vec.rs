@@ -39,6 +39,7 @@ use crate::DisjointSet;
 /// assert!(ds.is_joined(0, 1));
 /// assert!(!ds.is_joined(0, 2));
 /// ```
+#[allow(clippy::missing_inline_in_public_items)]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct DisjointSetVec<T> {
     data: Vec<T>,
@@ -120,7 +121,7 @@ impl<T> DisjointSetVec<T> {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             data: Vec::new(),
             sets: DisjointSet::new(),
