@@ -9,4 +9,4 @@ readme = "README.md"
 keywords = ["disjoint_set", "disjoint_sets", "union_find", "merge_find", "safe"]
 categories = ["data-structures", "algorithms"]
 edition = "2018"
-# rust-version = "1.31" <-- We really support this version, it's just to old for the rust-version key to exist.
+# rust-version = "1.31" <-- We really support this version, it's just too old for the rust-version key to exist.
