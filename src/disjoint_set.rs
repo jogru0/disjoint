@@ -41,7 +41,6 @@ pub struct DisjointSet {
 impl Default for DisjointSet {
     #[inline]
     fn default() -> Self {
-        let _i = 4;
         Self::new()
     }
 }
