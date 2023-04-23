@@ -31,7 +31,7 @@ Disjoint set data structures can be applied to find the [minimal spanning forest
     }
 ```
 
-Then it's very straight-forward to use the provided [`DisjointSet`] struct and its methods `is_joined` and `join` to implement [Kruskal’s algorithm] to find the minimum spanning forest.
+Then it's very straight-forward to use the provided `DisjointSet` struct and its methods `is_joined` and `join` to implement [Kruskal’s algorithm] to find the minimum spanning forest.
 
 ```rust
 use disjoint::DisjointSet;
@@ -51,7 +51,7 @@ fn minimum_spanning_forest<G : Graph>(graph: &G) -> G {
 }
 ```
 
-We can even use the fact that `join` returns `true` if the elements have not been joined already, to further simplify the algorithm (this variation is cometimes called Quick-Union):
+We can even use the fact that `join` returns `true` if the elements have not been joined already, to further simplify the algorithm (this variation is sometimes called Quick-Union):
   
 ```rust
 use disjoint::DisjointSet;
@@ -76,13 +76,13 @@ See the [documentation] for more details on how to use this crate.
 [undirected edge-weighted graph]: https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)#Weighted_graph
 [minimal spanning forest]: https://en.wikipedia.org/wiki/Minimum_spanning_tree
 [Kruskal’s algorithm]: https://en.wikipedia.org/wiki/Kruskal%27s_algorithm
-[documentation]: https://docs.rs/disjoint/latest/disjoint/struct.DisjointSet.html
+[documentation]: https://docs.rs/disjoint/latest/disjoint/
 
  ## Changelog
 
- This crate maintains a [`changelog`].
+ This crate maintains a [changelog].
  
- [`Changelog`]: https://github.com/jogru0/disjoint/blob/master/CHANGELOG.md
+ [changelog]: https://github.com/jogru0/disjoint/blob/master/CHANGELOG.md
 
 ## License
 

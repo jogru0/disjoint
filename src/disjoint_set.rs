@@ -2,7 +2,7 @@ use std::{cell::Cell, collections::HashMap};
 
 /// A disjoint-set data structure for tracking which elements are joined, without managing any additional data associated to the elements.
 ///
-/// This structure has methods like [`join`] or [`is_joined`] to modify or query which data is joined to which. For all of these, the elements are identified with their corresnding index. A `DisjointSet` of [`len`] `n` tracks elments from `0` to `n - 1`.   
+/// This structure has methods like [`join`] or [`is_joined`] to modify or query which data is joined to which. For all of these, the elements are identified with their corresponding index. A `DisjointSet` of [`len`] `n` tracks elements from `0` to `n - 1`.   
 ///
 /// [`join`]: DisjointSet::join
 /// [`is_joined`]: DisjointSet::is_joined
@@ -95,7 +95,7 @@ impl DisjointSet {
     /// // The disjoint set contains 4 elements.
     /// assert_eq!(ds.len(), 4);
     ///
-    /// //Two elements i and j are not joined in the same set, unless i = j.
+    /// // Two elements i and j are not joined in the same set, unless i = j.
     /// assert!(!ds.is_joined(0, 3));
     /// assert!(ds.is_joined(1, 1));
     ///
@@ -137,7 +137,7 @@ impl DisjointSet {
     ///     ds.add_singleton();
     /// }
     ///
-    /// // ...but this may make the disjoint set reallocate
+    /// // ...but this may make the disjoint set reallocate.
     /// ds.add_singleton();
     /// ```
     #[inline]
@@ -243,7 +243,7 @@ impl DisjointSet {
     /// ```
     /// use disjoint::DisjointSet;
     ///
-    /// // Initially, elements are only joined to themserves.
+    /// // Initially, elements are only joined to themselves.
     /// let mut ds = DisjointSet::with_len(3); // {0}, {1}, {2}
     /// assert!(ds.is_joined(0, 0));
     /// assert!(!ds.is_joined(0, 1));

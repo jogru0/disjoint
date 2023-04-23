@@ -111,7 +111,7 @@
 //! }
 //! ```
 //!
-//! We can even use the fact that [`join`] returns `true` if the elements have not been joined already, to further simplify the algorithm (this variation is cometimes called Quick-Union):
+//! We can even use the fact that [`join`] returns `true` if the elements have not been joined already, to further simplify the algorithm (this variation is sometimes called Quick-Union):
 //!   
 //! ```
 //! # trait Edge : Copy {
@@ -151,9 +151,9 @@
 //!
 //! ## Changelog
 //!
-//! This crate maintains a [`changelog`].
+//! This crate maintains a [changelog].
 //!
-//! [`Changelog`]: https://github.com/jogru0/disjoint/blob/master/CHANGELOG.md
+//! [changelog]: https://github.com/jogru0/disjoint/blob/master/CHANGELOG.md
 //!
 //! ## License
 //!

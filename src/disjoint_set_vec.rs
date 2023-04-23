@@ -74,7 +74,7 @@ where
 }
 
 impl<T> DisjointSetVec<T> {
-    /// Returns a `&Vec<T>` of all values .
+    /// Returns a `&Vec<T>` of all values.
     ///
     /// # Examples
     ///
@@ -106,9 +106,7 @@ impl<T> DisjointSetVec<T> {
     /// ```
     /// use disjoint::disjoint_set_vec;
     ///
-    /// let mut dsv = disjoint_set_vec![
-    ///     3; 10
-    /// ];
+    /// let mut dsv = disjoint_set_vec![3; 10];
     ///
     /// dsv.join(2, 4);
     /// let indices = dsv.indices();
@@ -122,13 +120,13 @@ impl<T> DisjointSetVec<T> {
         &self.indices
     }
 
-    /// Constructs a new, empty `DisjointSetVec` with at least the specified capacity.
+    /// Constructs a new, empty `DisjointSetVec<T>` with at least the specified capacity.
     ///
     /// It will be able to hold at least `capacity` elements without
     /// reallocating. This method is allowed to allocate for more elements than
     /// `capacity`. If `capacity` is 0, it will not allocate.
     ///
-    /// It is important to note that although the returned `DisjointSetVec` has the
+    /// It is important to note that although the returned `DisjointSetVec<T>` has the
     /// minimum *capacity* specified, it will have a zero *length*.
     ///
     /// # Panics
@@ -150,7 +148,7 @@ impl<T> DisjointSetVec<T> {
     ///     dsv.push("test");
     /// }
     ///
-    /// // ...but this may make the disjoint set reallocate
+    /// // ...but this may make the disjoint set reallocate.
     /// dsv.push("test");
     /// ```
     #[inline]
@@ -172,7 +170,7 @@ impl<T> DisjointSetVec<T> {
     /// # #![allow(unused_mut)]
     /// use disjoint::DisjointSetVec;
     ///
-    /// let mut ds: DisjointSetVec<i32> = DisjointSetVec::new();
+    /// let mut dsv: DisjointSetVec<i32> = DisjointSetVec::new();
     /// ```
     #[inline]
     #[must_use]
@@ -322,7 +320,7 @@ impl<T> DisjointSetVec<T> {
     /// ```
     /// use disjoint::disjoint_set_vec;
     ///
-    /// // Initially, elements are only joined to themserves.
+    /// // Initially, elements are only joined to themselves.
     /// let mut dsv = disjoint_set_vec!['a', 'b', 'c']; // {'a'}, {'b'}, {'c'}
     /// assert!(dsv.is_joined(0, 0));
     /// assert!(!dsv.is_joined(0, 1));
@@ -343,7 +341,7 @@ impl<T> DisjointSetVec<T> {
         self.indices.is_joined(first_index, second_index)
     }
 
-    /// If elments at `first_index` and `second_index` are in different sets, joins them together and returns `true`.
+    /// If elements at `first_index` and `second_index` are in different sets, joins them together and returns `true`.
     ///
     /// Otherwise, does nothing and returns `false`.
     ///

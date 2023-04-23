@@ -1,9 +1,9 @@
-/// Creates a [`DisjointSetVec`] containing the specified elements as separate singletons, not joined to each other.
+/// Creates a [`DisjointSetVec<T>`] containing the specified elements as separate singletons, not joined to each other.
 ///
-/// `disjoint_set_vec!` allows `DisjointSetVec`s to be defined with the same syntax as array expressions.
+/// `disjoint_set_vec!` allows a `DisjointSetVec<T>` to be defined with the same syntax as array expressions.
 /// There are two forms of this macro:
 ///
-/// - Create a `DisjointSetVec` containing a given list of elements:
+/// - Create a `DisjointSetVec<T>` containing a given list of elements:
 ///
 /// ```
 /// use disjoint::disjoint_set_vec;
@@ -14,7 +14,7 @@
 /// assert!(!ds.is_joined(0, 1));
 /// ```
 ///
-/// - Create a `DisjointSetVec` from a given element and size:
+/// - Create a `DisjointSetVec<T>` from a given element and size:
 ///
 /// ```
 /// use disjoint::disjoint_set_vec;
@@ -24,12 +24,12 @@
 /// assert!(!ds.is_joined(0, 2));
 /// ```
 ///
-/// Note that unlike array expressions this syntax supports all elements
+/// Note that unlike array expressions, this syntax supports all elements
 /// which implement [`Clone`] and the number of elements doesn't have to be
 /// a constant.
 ///
 /// This will use `clone` to duplicate an expression, so one should be careful
-/// using this with types having a nonstandard `Clone` implementation. For
+/// using this with types having a non-standard `Clone` implementation. For
 /// example, `disjoint_set_vec![Rc::new(1); 5]` will create five references
 /// to the same boxed integer value, not five references pointing to independently
 /// boxed integers.
@@ -38,7 +38,7 @@
 /// This will still evaluate `expr`, however, and immediately drop the resulting value, so
 /// be mindful of side effects.
 ///
-/// [`DisjointSetVec`]: crate::DisjointSetVec
+/// [`DisjointSetVec<T>`]: crate::DisjointSetVec
 #[macro_export]
 macro_rules! disjoint_set_vec {
     ($elem:expr; $n:expr) => (
