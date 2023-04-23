@@ -2,7 +2,22 @@
 
 This changelog keeps track of all API changes.
 
-Changes of implementation details, documentation, tests, etc., are not documented here. Take a look at the [commit history] if you are interested in that as well.
+Changes of implementation details, documentation, tests, etc., are not documented here. Take a look at the commit history linked for each version bump if you are interested in that as well.
+
+## [v0.6.0] - 2021-04-23
+
+### Added
+- Implemented `Deref<Target = [T]>` and `DerefMut` for `DisjointSetVec<T>`.
+    - This enables all the (mutable) slice methods for `DisjointSetVec<T>`, e.g. `get_mut`, `first`, and many more.
+
+### Removed
+- Tidied up `DisjointSetVec<T>`.
+    - Removed methods: `len`, `is_empty`, `get`, `iter`, and `iter_mut`.
+    - Removed implementations: `Index<usize>`, and `IndexMut<usize>`.
+    - All this functionality can still be used due to the new `Deref<Target = [T]>` and `DerefMut` implementations (`dsv.len()`, `dsv[0]`, etc., still work).
+
+
+
 
 ## [v0.5.0] - 2021-04-15
 
@@ -50,4 +65,4 @@ Changes of implementation details, documentation, tests, etc., are not documente
 [v0.3.0]: https://github.com/jogru0/disjoint/compare/v0.2.0...v0.3.0
 [v0.4.0]: https://github.com/jogru0/disjoint/compare/v0.3.0...v0.4.0
 [v0.5.0]: https://github.com/jogru0/disjoint/compare/v0.4.0...v0.5.0
-[commit history]: https://github.com/jogru0/disjoint/commits/master
+[v0.6.0]: https://github.com/jogru0/disjoint/compare/v0.5.0...v0.6.0

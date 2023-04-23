@@ -387,7 +387,7 @@ fn can_join_elements_added_later() {
 fn get_works_in_all_circumstances() {
     let mut dsv = disjoint_set_vec!["a", "a", "b"];
 
-    assert_eq!(dsv.get(0), Some(&"a"));
+    assert_eq!(dsv.first(), Some(&"a"));
     assert_eq!(dsv.get(1), Some(&"a"));
     assert_eq!(dsv.get(2), Some(&"b"));
     assert_eq!(dsv.get(3), None);
@@ -395,7 +395,7 @@ fn get_works_in_all_circumstances() {
 
     dsv.join(0, 2);
 
-    assert_eq!(dsv.get(0), Some(&"a"));
+    assert_eq!(dsv.first(), Some(&"a"));
     assert_eq!(dsv.get(1), Some(&"a"));
     assert_eq!(dsv.get(2), Some(&"b"));
     assert_eq!(dsv.get(3), None);
@@ -403,7 +403,7 @@ fn get_works_in_all_circumstances() {
 
     dsv[0] = "c";
 
-    assert_eq!(dsv.get(0), Some(&"c"));
+    assert_eq!(dsv.first(), Some(&"c"));
     assert_eq!(dsv.get(1), Some(&"a"));
     assert_eq!(dsv.get(2), Some(&"b"));
     assert_eq!(dsv.get(3), None);
@@ -411,7 +411,7 @@ fn get_works_in_all_circumstances() {
 
     dsv.push("d");
 
-    assert_eq!(dsv.get(0), Some(&"c"));
+    assert_eq!(dsv.first(), Some(&"c"));
     assert_eq!(dsv.get(1), Some(&"a"));
     assert_eq!(dsv.get(2), Some(&"b"));
     assert_eq!(dsv.get(3), Some(&"d"));
@@ -530,7 +530,7 @@ fn mut_ref_into_iter_works() {
         *val += 10;
     }
 
-    assert_eq!(dsv.get(0), Some(&12));
+    assert_eq!(dsv.first(), Some(&12));
     assert_eq!(dsv.get(1), Some(&13));
     assert_eq!(dsv.get(2), None);
 }

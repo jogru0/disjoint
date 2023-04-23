@@ -1,7 +1,4 @@
-use std::{
-    ops::{Index, IndexMut},
-    slice::{Iter, IterMut},
-};
+use std::ops::{Deref, DerefMut};
 
 use crate::DisjointSet;
 
@@ -181,110 +178,6 @@ impl<T> DisjointSetVec<T> {
         }
     }
 
-    /// Returns the number of elements, regardless of how they are joined together.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use disjoint::disjoint_set_vec;
-    ///
-    /// let mut dsv = disjoint_set_vec![10, 20, 30, 20];
-    /// assert_eq!(dsv.len(), 4);
-    ///
-    /// dsv.join(1, 2);
-    /// assert_eq!(dsv.len(), 4);
-    /// ```
-    #[inline]
-    #[must_use]
-    pub fn len(&self) -> usize {
-        self.data.len()
-    }
-
-    /// Returns a reference to the element at `index`, or `None` if out of bounds.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use disjoint::disjoint_set_vec;
-    ///
-    /// let dsv = disjoint_set_vec![10, 40, 30];
-    /// assert_eq!(dsv.get(1), Some(&40));
-    /// assert_eq!(dsv.get(3), None);
-    /// ```
-    #[inline]
-    #[must_use]
-    pub fn get(&self, index: usize) -> Option<&T> {
-        self.data.get(index)
-    }
-
-    /// Returns `true` if the collection contains no elements.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use disjoint::DisjointSetVec;
-    ///
-    /// let mut dsv = DisjointSetVec::new();
-    /// assert!(dsv.is_empty());
-    ///
-    /// dsv.push(2);
-    /// assert!(!dsv.is_empty());
-    /// ```
-    #[inline]
-    #[must_use]
-    pub fn is_empty(&self) -> bool {
-        self.data.is_empty()
-    }
-
-    /// Returns an iterator over the collection.
-    ///
-    /// The iterator yields all items in index order, independent of how they are joined.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use disjoint::disjoint_set_vec;
-    ///
-    /// let mut dsv = disjoint_set_vec![10, 40, 30];
-    ///
-    /// dsv.join(0, 2);
-    ///
-    /// let mut iterator = dsv.iter();
-    ///
-    /// assert_eq!(iterator.next(), Some(&10));
-    /// assert_eq!(iterator.next(), Some(&40));
-    /// assert_eq!(iterator.next(), Some(&30));
-    /// assert_eq!(iterator.next(), None);
-    /// ```
-    #[inline]
-    pub fn iter(&self) -> Iter<'_, T> {
-        self.data.iter()
-    }
-
-    /// Returns an iterator over the collection that allows modifying each value.
-    ///
-    /// The iterator yields all items in index order, independent of how they are joined.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use disjoint::disjoint_set_vec;
-    ///
-    /// let mut dsv = disjoint_set_vec![10, 40, 30];
-    ///
-    /// for elem in dsv.iter_mut() {
-    ///     *elem /= 10;
-    /// }
-    ///
-    /// assert_eq!(dsv[0], 1);
-    /// assert_eq!(dsv[1], 4);
-    /// assert_eq!(dsv[2], 3);
-    /// ```
-    #[inline]
-    pub fn iter_mut(&mut self) -> IterMut<'_, T> {
-        self.data.iter_mut()
-    }
-
     /// Appends an element to the back of a collection, not joined to any other element.
     ///
     /// # Panics
@@ -375,24 +268,6 @@ impl<T> DisjointSetVec<T> {
     }
 }
 
-impl<T> Index<usize> for DisjointSetVec<T> {
-    type Output = T;
-
-    #[inline]
-    #[must_use]
-    fn index(&self, index: usize) -> &Self::Output {
-        self.data.index(index)
-    }
-}
-
-impl<T> IndexMut<usize> for DisjointSetVec<T> {
-    #[inline]
-    #[must_use]
-    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
-        self.data.index_mut(index)
-    }
-}
-
 impl<T> IntoIterator for DisjointSetVec<T> {
     type Item = <Vec<T> as IntoIterator>::Item;
     type IntoIter = <Vec<T> as IntoIterator>::IntoIter;
@@ -423,5 +298,21 @@ impl<'a, T> IntoIterator for &'a mut DisjointSetVec<T> {
     #[must_use]
     fn into_iter(self) -> Self::IntoIter {
         IntoIterator::into_iter(&mut self.data)
+    }
+}
+
+impl<T> Deref for DisjointSetVec<T> {
+    type Target = [T];
+
+    #[inline]
+    fn deref(&self) -> &[T] {
+        &self.data
+    }
+}
+
+impl<T> DerefMut for DisjointSetVec<T> {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut [T] {
+        &mut self.data
     }
 }
