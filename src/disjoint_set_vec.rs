@@ -26,7 +26,7 @@ use crate::DisjointSet;
 /// // Joining 'a' and 'b' together via their indices.
 /// dsv.join(0, 1); // {'a', 'b'}
 ///
-/// // Adding 'd', not joined to anything.
+/// // Adding 'c', not joined to anything.
 /// dsv.push('c'); // {'a', 'b'}, {'c'}
 ///
 /// // Change 'b' to 'y'.
