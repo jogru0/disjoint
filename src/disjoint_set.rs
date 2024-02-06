@@ -66,8 +66,39 @@ impl DisjointSet {
         &mut self.ranks[id]
     }
 
+    /// Returns an element of the subset containing `child`.
+    /// This exact element is returned for every member of the subset.
+    ///
+    /// # Important
+    ///
+    /// The specific choice of the returned element is an implementation detail.
+    /// There are no further guarantees beyond what is documented here.
+    /// If you just want to check if two elements are in the same subset, use [`is_joined`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// let mut ds = DisjointSet::with_len(3); // {0}, {1}, {2}
+    /// assert_eq!(ds.root_of(0), 0);
+    /// assert_eq!(ds.root_of(1), 1);
+    /// assert_eq!(ds.root_of(2), 2);
+    ///
+    ///
+    /// ds.join(0, 1); // {0, 1}, {2}
+    /// assert_eq!(ds.root_of(0), ds.root_of(1));
+    /// assert_ne!(ds.root_of(0), ds.root_of(2));
+    ///
+    /// ds.join(1, 2); // {0, 1, 2}
+    /// assert_eq!(ds.root_of(0), ds.root_of(1));
+    /// assert_eq!(ds.root_of(0), ds.root_of(2));
+    /// ```
+    ///
+    /// [`is_joined`]: DisjointSet::is_joined
+    #[inline]
     #[must_use]
-    fn root_of(&self, mut child: usize) -> usize {
+    pub fn root_of(&self, mut child: usize) -> usize {
         let mut parent = self.get_parent(child);
 
         if child == parent {

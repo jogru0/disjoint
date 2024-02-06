@@ -202,6 +202,42 @@ impl<T> DisjointSetVec<T> {
         self.indices.add_singleton();
     }
 
+    /// Returns the index of an element of the subset containing the element at `child_index`.
+    /// This exact index is returned for all indices of elements of the subset.
+    ///
+    /// # Important
+    ///
+    /// The specific choice of the returned index is an implementation detail.
+    /// There are no further guarantees beyond what is documented here.
+    /// If you just want to check if two elements are in the same subset, use [`is_joined`].
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::disjoint_set_vec;
+    ///
+    /// let mut dsv = disjoint_set_vec!['a', 'b', 'c']; // {a}, {b}, {c}
+    /// assert_eq!(dsv.root_of(0), 0);
+    /// assert_eq!(dsv.root_of(1), 1);
+    /// assert_eq!(dsv.root_of(2), 2);
+    ///
+    ///
+    /// dsv.join(0, 1); // {a, b}, {c}
+    /// assert_eq!(dsv.root_of(0), dsv.root_of(1));
+    /// assert_ne!(dsv.root_of(0), dsv.root_of(2));
+    ///
+    /// dsv.join(1, 2); // {a, b, c}
+    /// assert_eq!(dsv.root_of(0), dsv.root_of(1));
+    /// assert_eq!(dsv.root_of(0), dsv.root_of(2));
+    /// ```
+    ///
+    /// [`is_joined`]: DisjointSetVec::is_joined
+    #[must_use]
+    #[inline]
+    pub fn root_of(&self, child_index: usize) -> usize {
+        self.indices.root_of(child_index)
+    }
+
     /// Returns `true` if elements at `first_index` and `second_index` are in the same subset.
     ///
     /// # Panics
