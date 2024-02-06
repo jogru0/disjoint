@@ -1,4 +1,7 @@
-use std::{cell::Cell, collections::HashMap};
+use std::{
+    cell::Cell,
+    collections::{hash_map::Entry, HashMap},
+};
 
 /// A disjoint-set data structure for tracking which elements are joined, without managing any additional data associated to the elements.
 ///
@@ -361,19 +364,19 @@ impl PartialEq for DisjointSet {
             return false;
         }
 
-        let mut self_root_to_other_root = std::collections::HashMap::with_capacity(self.len());
+        let mut self_root_to_other_root = HashMap::with_capacity(self.len());
 
         for i in 0..self.len() {
             let self_root = self.root_of(i);
             let other_root = other.root_of(i);
 
             match self_root_to_other_root.entry(self_root) {
-                std::collections::hash_map::Entry::Occupied(entry) => {
+                Entry::Occupied(entry) => {
                     if other_root != *entry.get() {
                         return false;
                     }
                 }
-                std::collections::hash_map::Entry::Vacant(entry) => {
+                Entry::Vacant(entry) => {
                     entry.insert(other_root);
                 }
             }

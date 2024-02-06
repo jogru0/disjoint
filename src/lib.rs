@@ -46,8 +46,9 @@
     clippy::implicit_return,
     clippy::indexing_slicing,
     clippy::arithmetic_side_effects,
-    clippy::integer_arithmetic,
-    clippy::missing_trait_methods
+    clippy::arithmetic_side_effects,
+    clippy::missing_trait_methods,
+    clippy::single_call_fn
 )]
 
 //! [![Tests](https://github.com/jogru0/disjoint/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jogru0/disjoint/actions/workflows/tests.yml?query=branch:master)
