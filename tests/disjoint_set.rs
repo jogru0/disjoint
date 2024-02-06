@@ -359,6 +359,22 @@ fn add_singleton_produces_singleton() {
 }
 
 #[test]
+fn root_of_works() {
+    let mut ds = DisjointSet::with_len(3);
+    assert_eq!(ds.root_of(0), 0);
+    assert_eq!(ds.root_of(1), 1);
+    assert_eq!(ds.root_of(2), 2);
+
+    ds.join(0, 1);
+    assert_eq!(ds.root_of(0), ds.root_of(1));
+    assert_ne!(ds.root_of(0), ds.root_of(2));
+
+    ds.join(1, 2);
+    assert_eq!(ds.root_of(0), ds.root_of(1));
+    assert_eq!(ds.root_of(0), ds.root_of(2));
+}
+
+#[test]
 fn can_join_elements_added_later() {
     let mut ds = DisjointSet::with_len(3);
 

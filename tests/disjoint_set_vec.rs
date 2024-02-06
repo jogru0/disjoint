@@ -464,6 +464,22 @@ fn indexing_works() {
 }
 
 #[test]
+fn root_of_works() {
+    let mut dsv = disjoint_set_vec!['a', 'b', 'c'];
+    assert_eq!(dsv.root_of(0), 0);
+    assert_eq!(dsv.root_of(1), 1);
+    assert_eq!(dsv.root_of(2), 2);
+
+    dsv.join(0, 1);
+    assert_eq!(dsv.root_of(0), dsv.root_of(1));
+    assert_ne!(dsv.root_of(0), dsv.root_of(2));
+
+    dsv.join(1, 2);
+    assert_eq!(dsv.root_of(0), dsv.root_of(1));
+    assert_eq!(dsv.root_of(0), dsv.root_of(2));
+}
+
+#[test]
 #[should_panic]
 fn indexing_panics() {
     let dsv = disjoint_set_vec![3, 4, 5];
