@@ -34,7 +34,7 @@
     unused_lifetimes,
     unused_macro_rules,
     unused_qualifications,
-    unused_tuple_struct_fields,
+    dead_code,
     variant_size_differences
 )]
 #![allow(
