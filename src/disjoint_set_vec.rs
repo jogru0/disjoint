@@ -178,6 +178,31 @@ impl<T> DisjointSetVec<T> {
         }
     }
 
+    /// Clears the `DisjointSetVec`.
+    ///
+    /// The disjoint set will retain its capacity, so adding elements will not
+    /// allocate.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use disjoint::DisjointSetVec;
+    ///
+    /// let mut set = DisjointSetVec::new();
+    /// set.push(123);
+    /// set.push(456);
+    /// set.clear();
+    /// assert_eq!(set.values().len(), 0);
+    /// assert!(set.values().capacity() >= 2);
+    /// // Does not allocate!
+    /// set.push(789);
+    /// ```
+    #[inline]
+    pub fn clear(&mut self) {
+        self.data.clear();
+        self.indices.clear();
+    }
+
     /// Appends an element to the back of a collection, not joined to any other
     /// element. Returns the index of the new element.
     ///
