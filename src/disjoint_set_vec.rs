@@ -178,7 +178,8 @@ impl<T> DisjointSetVec<T> {
         }
     }
 
-    /// Appends an element to the back of a collection, not joined to any other element.
+    /// Appends an element to the back of a collection, not joined to any other
+    /// element. Returns the index of the new element.
     ///
     /// # Panics
     ///
@@ -197,9 +198,9 @@ impl<T> DisjointSetVec<T> {
     /// assert!(!dsv.is_joined(0, 1));
     /// ```
     #[inline]
-    pub fn push(&mut self, value: T) {
+    pub fn push(&mut self, value: T) -> usize {
         self.data.push(value);
-        self.indices.add_singleton();
+        self.indices.add_singleton()
     }
 
     /// Returns the index of an element of the subset containing the element at `child_index`.

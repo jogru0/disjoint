@@ -360,9 +360,9 @@ fn push_produces_singleton() {
     let mut dsv = disjoint_set_vec![-1, -2, -3];
     dsv.join(0, 2);
     verify_subsets(&dsv, &[vec![0, 2], vec![1]]);
-    dsv.push(0);
+    assert_eq!(dsv.push(0), 3);
     verify_subsets(&dsv, &[vec![0, 2], vec![1], vec![3]]);
-    dsv.push(0);
+    assert_eq!(dsv.push(0), 4);
     verify_subsets(&dsv, &[vec![0, 2], vec![1], vec![3], vec![4]]);
 }
 
