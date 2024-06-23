@@ -183,7 +183,8 @@ impl DisjointSet {
         }
     }
 
-    /// Adds a new element, not joined to any other element.
+    /// Adds a new element, not joined to any other element. Returns the index
+    /// of the new element.
     ///
     /// # Panics
     ///
@@ -195,14 +196,16 @@ impl DisjointSet {
     /// use disjoint::DisjointSet;
     ///
     /// let mut ds = DisjointSet::with_len(1);
-    /// ds.add_singleton();
+    /// assert_eq!(ds.add_singleton(), 1);
     /// assert_eq!(ds.len(), 2);
     /// assert!(!ds.is_joined(0, 1));
     /// ```
     #[inline]
-    pub fn add_singleton(&mut self) {
-        self.parents.push(Cell::new(self.len()));
+    pub fn add_singleton(&mut self) -> usize {
+        let id = self.len();
+        self.parents.push(Cell::new(id));
         self.ranks.push(0);
+        id
     }
 
     /// If `first_element` and `second_element` are in different sets, joins them together and returns `true`.

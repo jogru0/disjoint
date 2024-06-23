@@ -352,9 +352,9 @@ fn add_singleton_produces_singleton() {
     let mut ds = DisjointSet::with_len(3);
     ds.join(0, 2);
     verify_subsets(&ds, &[vec![0, 2], vec![1]]);
-    ds.add_singleton();
+    assert_eq!(ds.add_singleton(), 3);
     verify_subsets(&ds, &[vec![0, 2], vec![1], vec![3]]);
-    ds.add_singleton();
+    assert_eq!(ds.add_singleton(), 4);
     verify_subsets(&ds, &[vec![0, 2], vec![1], vec![3], vec![4]]);
 }
 
