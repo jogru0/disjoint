@@ -411,3 +411,13 @@ fn different_ways_of_empty_construction() {
     assert_eq!(empty_with_len, empty_new);
     assert_eq!(empty_with_len, empty_default);
 }
+
+#[test]
+fn clear_removes_elements() {
+    let mut set = DisjointSet::new();
+    set.add_singleton();
+    set.add_singleton();
+    assert_eq!(set.len(), 2);
+    set.clear();
+    assert_eq!(set.len(), 0);
+}
