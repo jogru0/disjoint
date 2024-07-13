@@ -4,6 +4,13 @@ This changelog keeps track of all API changes.
 
 Changes of implementation details, documentation, tests, etc., are not documented here. Take a look at the commit history linked for each version bump if you are interested in that as well.
 
+## [v0.8.0] - 2024-07-13
+
+### Added
+- Implemented `clear` for `DisjointSet` and `DisjointSetVec<T>`.
+
+### Changed
+ - `DisjointSet::add_singleton` and `DisjointSetVec::push` now return the index of the new element.
 
 ## [v0.7.0] - 2024-02-06
 
@@ -69,3 +76,4 @@ Changes of implementation details, documentation, tests, etc., are not documente
 [v0.5.0]: https://github.com/jogru0/disjoint/compare/v0.4.0...v0.5.0
 [v0.6.0]: https://github.com/jogru0/disjoint/compare/v0.5.0...v0.6.0
 [v0.7.0]: https://github.com/jogru0/disjoint/compare/v0.6.0...v0.7.0
+[v0.8.0]: https://github.com/jogru0/disjoint/compare/v0.7.0...v0.8.0
