@@ -357,6 +357,30 @@ impl DisjointSet {
         }
     }
 
+    /// Clears the `DisjointSet`.
+    /// 
+    /// The disjoint set will retain its capacity, so adding elements will not
+    /// allocate.
+    /// 
+    /// # Examples
+    /// 
+    /// ```
+    /// use disjoint::DisjointSet;
+    ///
+    /// let mut set = DisjointSet::new();
+    /// set.add_singleton();
+    /// set.add_singleton();
+    /// set.clear();
+    /// assert_eq!(set.len(), 0);
+    /// // Does not allocate!
+    /// set.add_singleton();
+    /// ```
+    #[inline]
+    pub fn clear(&mut self) {
+        self.parents.clear();
+        self.ranks.clear();
+    }
+
     /// Returns a `Vec` of all sets. Each entry corresponds to one set, and is a `Vec` of its elements.
     ///
     /// The sets are ordered by their smallest contained element. The elements inside each sets are ordered.
@@ -436,5 +460,15 @@ mod test {
 
         assert_ne!(ds.parents[1], ds.parents[3]);
         assert!(!ds.join(1, 3));
+    }
+
+    #[test]
+    fn clear_removes_elements_without_removing_capacity() {
+        let mut set = DisjointSet::new();
+        set.add_singleton();
+        set.add_singleton();
+        let capacity = set.parents.capacity();
+        set.clear();
+        assert_eq!(set.parents.capacity(), capacity);
     }
 }
