@@ -394,6 +394,7 @@ fn can_join_elements_added_later() {
 #[test]
 #[should_panic]
 fn with_capacity_panics() {
+    #[allow(clippy::legacy_numeric_constants)]
     let _ = DisjointSet::with_capacity(std::isize::MAX as usize - 1);
 }
 

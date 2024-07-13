@@ -1,3 +1,4 @@
+#![allow(clippy::allow_attributes_without_reason)]
 #![allow(unknown_lints)]
 // Disabled to support old Rust versions.
 // Activate these when developing locally on a recent toolchain.
@@ -22,7 +23,6 @@
     missing_debug_implementations,
     missing_docs,
     noop_method_call,
-    pointer_structural_match,
     single_use_lifetimes,
     trivial_casts,
     trivial_numeric_casts,

@@ -358,12 +358,12 @@ impl DisjointSet {
     }
 
     /// Clears the `DisjointSet`.
-    /// 
+    ///
     /// The disjoint set will retain its capacity, so adding elements will not
     /// allocate.
-    /// 
+    ///
     /// # Examples
-    /// 
+    ///
     /// ```
     /// use disjoint::DisjointSet;
     ///
