@@ -38,7 +38,7 @@ use disjoint::DisjointSet;
 
 fn minimum_spanning_forest<G : Graph>(graph: &G) -> G {
     let mut result_edges = Vec::new();
-    let mut vertices = DisjointSet::new(graph.number_vertices());
+    let mut vertices = DisjointSet::with_len(graph.number_vertices());
 
     for edge in graph.edges_ordered_by_weight() {
         if !vertices.is_joined(edge.first_vertex(), edge.second_vertex()) {
@@ -58,7 +58,7 @@ use disjoint::DisjointSet;
 
 fn minimum_spanning_forest_quick_find<G : Graph>(graph: &G) -> G {
     let mut result_edges = Vec::new();
-    let mut vertices = DisjointSet::new(graph.number_vertices());
+    let mut vertices = DisjointSet::with_len(graph.number_vertices());
 
     for edge in graph.edges_ordered_by_weight() {
         if vertices.join(edge.first_vertex(), edge.second_vertex()) {
