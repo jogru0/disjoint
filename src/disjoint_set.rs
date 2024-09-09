@@ -1,7 +1,8 @@
-use std::{
-    cell::Cell,
-    collections::{hash_map::Entry, HashMap},
-};
+use alloc::vec;
+use alloc::vec::Vec;
+use core::cell::Cell;
+use hashbrown::hash_map::Entry;
+use hashbrown::HashMap;
 
 /// A disjoint-set data structure for tracking which elements are joined, without managing any additional data associated to the elements.
 ///

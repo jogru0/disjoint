@@ -52,6 +52,7 @@
     clippy::missing_trait_methods,
     clippy::single_call_fn
 )]
+#![no_std]
 
 //! [![Tests](https://github.com/jogru0/disjoint/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/jogru0/disjoint/actions/workflows/tests.yml?query=branch:master)
 //! [![Coverage](https://codecov.io/gh/jogru0/disjoint/branch/master/graph/badge.svg?token=D910NJAG7K)](https://app.codecov.io/gh/jogru0/disjoint/tree/master)
@@ -172,6 +173,8 @@
 //! Unless you explicitly state otherwise, any contribution intentionally submitted
 //! for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 //! additional terms or conditions.
+
+extern crate alloc;
 
 mod disjoint_set;
 pub use self::disjoint_set::DisjointSet;
