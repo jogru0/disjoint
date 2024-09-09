@@ -1,5 +1,7 @@
-#![allow(clippy::allow_attributes_without_reason)]
-#![allow(unknown_lints)]
+#![allow(
+    unknown_lints,
+    reason = "old rust versions might not have the lints yet"
+)]
 // Disabled to support old Rust versions.
 // Activate these when developing locally on a recent toolchain.
 /////////////////////////////
@@ -37,6 +39,7 @@
     dead_code,
     variant_size_differences
 )]
+#![expect(clippy::allow_attributes_without_reason)]
 #![allow(
     clippy::blanket_clippy_restriction_lints,
     clippy::pub_use,
@@ -45,7 +48,6 @@
     clippy::std_instead_of_core,
     clippy::implicit_return,
     clippy::indexing_slicing,
-    clippy::arithmetic_side_effects,
     clippy::arithmetic_side_effects,
     clippy::missing_trait_methods,
     clippy::single_call_fn

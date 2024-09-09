@@ -34,7 +34,6 @@ use std::{
 /// For a real word application example, see [the crate examples].
 ///
 /// [the crate examples]: crate#examples
-#[allow(clippy::missing_inline_in_public_items)]
 #[derive(Debug, Clone)]
 pub struct DisjointSet {
     parents: Vec<Cell<usize>>,
@@ -349,7 +348,7 @@ impl DisjointSet {
     /// ```
     #[must_use]
     #[inline]
-    #[allow(clippy::missing_const_for_fn)]
+    #[expect(clippy::missing_const_for_fn)]
     pub fn new() -> Self {
         Self {
             parents: Vec::new(),
@@ -395,6 +394,7 @@ impl DisjointSet {
     /// assert_eq!(ds.sets(), vec![vec![0], vec![1, 3], vec![2]]);
     /// ```
     #[must_use]
+    #[expect(clippy::allow_attributes)]
     #[allow(clippy::missing_inline_in_public_items)]
     pub fn sets(&self) -> Vec<Vec<usize>> {
         let mut result = Vec::new();
@@ -416,6 +416,7 @@ impl DisjointSet {
 
 impl PartialEq for DisjointSet {
     #[must_use]
+    #[expect(clippy::allow_attributes)]
     #[allow(clippy::missing_inline_in_public_items)]
     fn eq(&self, other: &Self) -> bool {
         if self.len() != other.len() {
